@@ -1,0 +1,2347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程知识点详情</title>
+    <!-- 防止 favicon 404 错误 -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+    <!-- 引入 Tailwind CSS (静态版本，无警告) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <!-- 引入 Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- 引入 Marked.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap');
+
+        body {
+            font-family: 'Plus Jakarta Sans', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Tailwind v3 兼容样式 (静态版本不包含这些) */
+        .backdrop-blur-md { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .backdrop-blur-xl { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+        .backdrop-blur-sm { backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+        .bg-white\/50 { background-color: rgba(255,255,255,0.5); }
+        .bg-white\/60 { background-color: rgba(255,255,255,0.6); }
+        .bg-white\/70 { background-color: rgba(255,255,255,0.7); }
+        .bg-white\/80 { background-color: rgba(255,255,255,0.8); }
+        .border-white\/40 { border-color: rgba(255,255,255,0.4); }
+        .border-white\/50 { border-color: rgba(255,255,255,0.5); }
+        .border-white\/60 { border-color: rgba(255,255,255,0.6); }
+        .ring-4 { box-shadow: 0 0 0 4px rgba(255,255,255,0.3); }
+        .text-\[10px\] { font-size: 10px; }
+        .rounded-\[2\.5rem\] { border-radius: 2.5rem; }
+        .whitespace-pre-wrap { white-space: pre-wrap; }
+        .bg-clip-text { -webkit-background-clip: text; background-clip: text; }
+        .text-transparent { color: transparent; }
+        .bg-gradient-to-r { background-image: linear-gradient(to right, var(--tw-gradient-stops)); }
+        .from-slate-800 { --tw-gradient-from: #1e293b; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(30, 41, 59, 0)); }
+        .via-indigo-900 { --tw-gradient-stops: var(--tw-gradient-from), #312e81, var(--tw-gradient-to, rgba(49, 46, 129, 0)); }
+        .to-slate-800 { --tw-gradient-to: #1e293b; }
+        .tracking-tight { letter-spacing: -0.025em; }
+        
+        /* Slate 颜色系列 (Tailwind v3 新增) */
+        .bg-slate-50 { background-color: #f8fafc; }
+        .bg-slate-100 { background-color: #f1f5f9; }
+        .bg-slate-200 { background-color: #e2e8f0; }
+        .bg-slate-900 { background-color: #0f172a; }
+        .text-slate-400 { color: #94a3b8; }
+        .text-slate-500 { color: #64748b; }
+        .text-slate-600 { color: #475569; }
+        .text-slate-700 { color: #334155; }
+        .text-slate-800 { color: #1e293b; }
+        .border-slate-100 { border-color: #f1f5f9; }
+        .border-slate-200 { border-color: #e2e8f0; }
+
+        /* 装饰背景球 */
+        .blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.6;
+        }
+        .blob-1 { top: -10%; left: -10%; width: 500px; height: 500px; background: #e0e7ff; }
+        .blob-2 { bottom: -10%; right: -10%; width: 500px; height: 500px; background: #fae8ff; }
+        .blob-3 { top: 40%; left: 40%; width: 300px; height: 300px; background: #f0f9ff; }
+
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* 标题折叠样式 - 极简现代风 */
+        .collapsible-header {
+            cursor: pointer !important;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(8px);
+            padding: 1rem 1.25rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            
+            margin-top: 2em !important;
+            margin-bottom: 1em !important;
+            box-shadow: 0 2px 4px rgba(148, 163, 184, 0.05);
+        }
+        
+        .collapsible-header:hover {
+            background: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(148, 163, 184, 0.1), 0 4px 6px -2px rgba(148, 163, 184, 0.05);
+            border-color: #818cf8;
+        }
+
+        /* 标题文字样式 */
+        .collapsible-header span {
+            flex: 1;
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 1.05em;
+            letter-spacing: -0.01em;
+        }
+
+        /* 折叠箭头 - 圆形背景 */
+        .collapsible-header::after {
+            content: '';
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236366f1' stroke-width='3'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7' /%3E%3C/svg%3E");
+            background-size: 14px;
+            background-repeat: no-repeat;
+            background-position: center;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background-color: #e0e7ff;
+            border-radius: 50%;
+            margin-left: 12px;
+        }
+
+        .collapsible-header.collapsed::after {
+            transform: rotate(-90deg);
+            background-color: #f1f5f9;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8' stroke-width='3'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7' /%3E%3C/svg%3E");
+        }
+        
+        .collapsible-header.collapsed {
+            background: transparent;
+            border-color: transparent;
+            box-shadow: none;
+        }
+        
+        .collapsible-header.collapsed:hover {
+            background: rgba(255,255,255,0.5);
+        }
+
+        /* 动画关键帧 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
+
+        /* Typography 覆盖 */
+        .prose { max-width: none; }
+        .prose p { margin-bottom: 1.5em; line-height: 1.8; color: #475569; }
+        .prose strong { color: #334155; font-weight: 700; }
+        .prose blockquote { 
+            border-left: none; 
+            background: #f8fafc; 
+            border-radius: 1rem; 
+            padding: 1.5rem; 
+            font-style: normal;
+            border: 1px solid #e2e8f0;
+            position: relative;
+        }
+        .prose blockquote::before {
+            content: '"';
+            font-size: 3rem;
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            color: #cbd5e1;
+            font-family: serif;
+        }
+        .prose code {
+            color: #6366f1;
+            background: #e0e7ff;
+            padding: 0.2em 0.4em;
+            border-radius: 0.375rem;
+            font-weight: 600;
+        }
+        /* 列表样式增强 */
+        .prose ol {
+            list-style-type: decimal;
+            padding-left: 1.5em;
+            margin-bottom: 1.5em;
+        }
+        .prose li {
+            margin-bottom: 0.5em;
+            color: #475569;
+        }
+        .prose li::marker {
+            color: #6366f1; /* indigo-500 */
+            font-weight: 600;
+        }
+
+        /* 表格样式美化 */
+        .prose table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            margin: 2em 0;
+            border: 1px solid #e2e8f0;
+        }
+        .prose thead {
+            background-color: #e0e7ff; /* indigo-100 */
+        }
+        .prose th {
+            color: #312e81; /* indigo-900 */
+            font-weight: 700;
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #c7d2fe;
+            white-space: nowrap; /* 防止表头换行太丑 */
+        }
+        .prose td {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #475569;
+            background-color: white;
+            vertical-align: top;
+        }
+        .prose tr:last-child td {
+            border-bottom: none;
+        }
+        .prose tr:nth-child(even) td {
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .prose tr:hover td {
+            background-color: #f1f5f9;
+        }
+
+        /* 试看下拉锁定提示 */
+        #previewScrollMask {
+            pointer-events: none;
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: min(36vh, 260px);
+            z-index: 55;
+        }
+        .preview-scroll-blur {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(241, 245, 249, 0.96), rgba(241, 245, 249, 0.55), rgba(241, 245, 249, 0.06));
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+        .preview-scroll-lock-pill {
+            position: absolute;
+            left: 50%;
+            bottom: 20px;
+            transform: translateX(-50%);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(203, 213, 225, 0.95);
+            background: rgba(255, 255, 255, 0.9);
+            color: #334155;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+            white-space: nowrap;
+        }
+        .preview-scroll-lock-pill i {
+            color: #f59e0b;
+        }
+
+        .quiz-modal-layer {
+            position: fixed;
+            inset: 0;
+            z-index: 2147483000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(15, 23, 42, 0.82);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            padding: 1rem;
+        }
+
+        .quiz-modal-layer.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen relative overflow-x-hidden">
+    <!-- 背景装饰 -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <!-- 顶部导航栏 (悬浮透明) -->
+    <nav class="fixed top-0 left-0 right-0 z-50 h-20 px-6 flex items-center transition-all duration-300" id="navbar">
+        <div class="container mx-auto max-w-5xl flex items-center justify-between">
+            <button onclick="goBack()" class="group flex items-center justify-center w-10 h-10 rounded-full bg-white/50 backdrop-blur-md border border-white/40 shadow-sm hover:bg-white hover:shadow-md hover:scale-105 transition-all duration-300">
+                <i class="fa-solid fa-arrow-left text-slate-600 group-hover:text-indigo-600 transition-colors"></i>
+            </button>
+            <div class="hidden md:block text-sm font-semibold text-slate-500 opacity-0 transition-opacity duration-300" id="navTitleWrapper">
+                <span class="bg-white/50 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/40" id="navTitle"></span>
+            </div>
+            <!-- 右侧占位，可放收藏/分享按钮 -->
+            <div class="w-10"></div> 
+        </div>
+    </nav>
+
+    <!-- 主要内容区域 -->
+    <main class="container mx-auto max-w-4xl pt-28 pb-24 px-4 sm:px-6 relative z-10">
+        
+        <!-- 加载状态 -->
+        <div id="loading" class="flex flex-col items-center justify-center py-32 animate-pulse">
+            <div class="w-16 h-16 rounded-2xl bg-indigo-100 flex items-center justify-center mb-6">
+                <div class="w-8 h-8 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide">LOADING CONTENT...</p>
+        </div>
+        
+        <!-- 错误状态 -->
+        <div id="error" class="hidden flex flex-col items-center justify-center py-32 text-center">
+            <div class="w-20 h-20 bg-red-50 rounded-3xl flex items-center justify-center mb-6 shadow-sm transform rotate-3">
+                <i class="fa-solid fa-triangle-exclamation text-red-400 text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-800 mb-2">加载失败</h3>
+            <p class="text-slate-500 mb-8 max-w-xs mx-auto">无法获取课程内容，请检查网络连接后重试。</p>
+            <button onclick="location.reload()" class="px-8 py-3 bg-slate-900 text-white rounded-xl font-medium hover:bg-slate-800 transition shadow-lg hover:shadow-xl hover:-translate-y-1">
+                刷新页面
+            </button>
+        </div>
+        
+        <!-- 内容显示区域 -->
+        <div id="content" class="hidden animate-fade-in">
+            <!-- 头部 Hero 区域 -->
+            <header class="text-center mb-12">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/60 backdrop-blur border border-white/40 shadow-sm text-xs font-semibold text-indigo-600 mb-6 tracking-wide uppercase">
+                    <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+                    <span id="categoryTag">KNOWLEDGE BASE</span>
+                </div>
+                
+                <h1 class="text-3xl md:text-5xl font-extrabold text-slate-700 mb-8 leading-tight tracking-tight px-4" id="courseTitle"></h1>
+                
+                <!-- 路径导航 -->
+                <div class="flex flex-wrap items-center justify-center gap-2 text-sm text-slate-500 mb-8" id="categoryPathContainer"></div>
+                
+                <!-- 元数据卡片 -->
+                <div class="flex flex-wrap justify-center gap-4">
+                    <div class="flex items-center gap-3 px-5 py-3 bg-white/70 backdrop-blur-sm rounded-2xl shadow-sm border border-white/50">
+                        <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
+                            <i class="fa-solid fa-layer-group text-sm"></i>
+                        </div>
+                        <div class="text-left">
+                            <p class="text-[10px] uppercase text-slate-400 font-bold tracking-wider">分类</p>
+                            <p class="text-sm font-semibold text-slate-700" id="courseCategory"></p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-3 px-5 py-3 bg-white/70 backdrop-blur-sm rounded-2xl shadow-sm border border-white/50">
+                        <div class="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center text-orange-500">
+                            <i class="fa-regular fa-clock text-sm"></i>
+                        </div>
+                        <div class="text-left">
+                            <p class="text-[10px] uppercase text-slate-400 font-bold tracking-wider">时长</p>
+                            <p class="text-sm font-semibold text-slate-700" id="courseDuration"></p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-3 px-5 py-3 bg-white/70 backdrop-blur-sm rounded-2xl shadow-sm border border-white/50">
+                        <div class="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center text-green-500">
+                            <i class="fa-solid fa-chart-simple text-sm"></i>
+                        </div>
+                        <div class="text-left">
+                            <p class="text-[10px] uppercase text-slate-400 font-bold tracking-wider">难度</p>
+                            <p class="text-sm font-semibold text-slate-700" id="courseLevel"></p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- 视频播放区域 -->
+            <div id="videoSection" class="hidden mb-12 transform hover:scale-[1.01] transition-transform duration-500">
+                <div class="bg-black rounded-3xl shadow-2xl overflow-hidden ring-4 ring-white/30 relative group">
+                    <div class="aspect-video relative" id="videoWrapper">
+                        <div id="videoLoading" class="absolute inset-0 flex flex-col items-center justify-center text-white/90 bg-slate-900 z-10">
+                            <div class="w-10 h-10 border-4 border-white/20 border-t-white rounded-full animate-spin mb-4"></div>
+                            <p class="text-xs font-medium tracking-widest uppercase opacity-70">Video Loading</p>
+                        </div>
+                        
+                        <div id="videoError" class="hidden absolute inset-0 flex flex-col items-center justify-center text-white bg-slate-900 z-10">
+                            <i class="fa-regular fa-circle-xmark text-5xl mb-4 text-white/20"></i>
+                            <p id="videoErrorMsg" class="text-sm opacity-60">视频暂时无法播放</p>
+                        </div>
+                        
+                        <div id="videoPlayerContainer" class="hidden w-full h-full bg-black relative">
+                            <video 
+                                id="courseVideo"
+                                controls
+                                preload="metadata"
+                                class="w-full h-full object-contain"
+                                playsinline
+                                webkit-playsinline
+                            >
+                                您的浏览器不支持视频播放
+                            </video>
+                            
+                            <!-- 试看倒计时提示 -->
+                            <div id="previewToast" class="hidden absolute top-4 right-4 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-white text-xs font-medium border border-white/20 z-10 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                                试看模式：剩余 <span id="previewCountDown" class="text-amber-400 font-bold">30</span> 秒
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 试看结束遮罩层 - 移动端优化，移到视频容器外部 -->
+                <div id="previewOverlay" class="hidden fixed inset-0 z-[100] flex flex-col items-center justify-center text-center p-4" style="background: rgba(30, 41, 59, 0.95);">
+                    <!-- 卡片容器 - 纯白背景，移动端适配 -->
+                    <div class="rounded-2xl p-6 md:p-8 max-w-md w-full shadow-2xl" style="background: #ffffff;">
+                        <div class="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center mb-4 md:mb-5 mx-auto" style="background: #fef3c7;">
+                            <i class="fa-solid fa-lock text-3xl md:text-4xl" style="color: #f59e0b;"></i>
+                        </div>
+                        <h3 class="text-2xl md:text-3xl font-bold mb-2 md:mb-3" style="color: #1e293b;">试看结束</h3>
+                        <p class="mb-6 md:mb-8 text-sm md:text-base leading-relaxed" style="color: #64748b;">升级会员解锁完整视频，享受 AI 智能辅导、真题库等更多权益。</p>
+                        <button onclick="window.location.href='/member-center'" class="w-full px-6 md:px-8 py-3 md:py-4 text-white rounded-xl font-bold text-base md:text-lg shadow-lg transform hover:-translate-y-1 transition-all flex items-center justify-center gap-2" style="background: linear-gradient(135deg, #f59e0b, #ea580c);">
+                            <i class="fa-solid fa-crown"></i> 立即升级会员
+                        </button>
+                        <button onclick="replayPreview()" class="mt-4 md:mt-5 text-sm block mx-auto transition-colors py-2" style="color: #94a3b8;">
+                            <i class="fa-solid fa-rotate-left mr-1"></i> 重播试看片段
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 试看阅读锁：下拉到阈值后显示虚化和小锁 -->
+                <div id="previewScrollMask" class="hidden">
+                    <div class="preview-scroll-blur"></div>
+                    <div class="preview-scroll-lock-pill">
+                        <i class="fa-solid fa-lock"></i>
+                        <span>试看内容已到上限，升级会员继续阅读</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 知识点内容卡片 -->
+            <div class="bg-white/80 backdrop-blur-xl rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 p-8 md:p-12">
+                <div class="flex items-center justify-between mb-10 pb-6 border-b border-slate-100">
+                    <h2 class="text-2xl font-bold text-slate-800 flex items-center gap-3">
+                        <span class="w-2 h-8 bg-indigo-500 rounded-full"></span>
+                        知识详解
+                    </h2>
+                    <span class="hidden sm:flex items-center gap-2 text-xs font-medium text-slate-400 bg-slate-50 px-3 py-1.5 rounded-full">
+                        <i class="fa-solid fa-arrows-up-down"></i> 点击标题可展开/折叠
+                    </span>
+                </div>
+                
+                <article class="prose prose-lg prose-slate max-w-none prose-headings:font-bold prose-headings:text-slate-800 prose-a:text-indigo-600 hover:prose-a:text-indigo-500 transition-colors" id="knowledgeContent">
+                    <!-- 内容将通过 JS 插入 -->
+                </article>
+            </div>
+            
+            <!-- 底部版权 -->
+            <footer class="text-center py-12 text-slate-400 text-sm font-medium">
+                &copy; HUAWISE HOTELS & RESORTS
+            </footer>
+        </div>
+    </main>
+
+    <!-- 答题弹窗 -->
+    <div id="quizModal" class="quiz-modal-layer hidden">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 m-4 transform transition-all scale-100">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                    <span class="w-1.5 h-6 bg-indigo-500 rounded-full"></span>
+                    随堂测验
+                </h3>
+                <span class="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-1 rounded">第 <span id="quizIndex">1</span> 题</span>
+            </div>
+            
+            <div class="mb-6">
+                <p id="quizContent" class="text-slate-700 font-medium text-lg mb-4"></p>
+                <div id="quizOptions" class="space-y-3">
+                    <!-- 选项将动态插入 -->
+                </div>
+            </div>
+            
+            <div id="quizFeedback" class="hidden mb-6 p-4 rounded-xl text-sm"></div>
+            <div id="quizSummary" class="hidden mb-6 rounded-2xl border border-emerald-100 bg-emerald-50/80 p-5">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <div class="text-sm font-semibold text-emerald-700 mb-1">本次结课测验已完成</div>
+                        <div id="quizSummaryTitle" class="text-xl font-extrabold text-slate-800 mb-2">成绩 0 分</div>
+                        <div id="quizSummaryStats" class="text-sm text-slate-600 leading-7"></div>
+                    </div>
+                    <div class="h-16 w-16 rounded-2xl bg-white/80 flex items-center justify-center text-2xl text-emerald-500 shadow-sm">
+                        <i class="fa-solid fa-square-poll-vertical"></i>
+                    </div>
+                </div>
+            </div>
+            <button id="quizSubmitBtn" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-200 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                提交答案
+            </button>
+            <button id="quizContinueBtn" class="hidden w-full py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl shadow-lg shadow-green-200 transition-all active:scale-95">
+                下一题
+            </button>
+            <button id="quizViewRecordBtn" class="hidden w-full py-3 mt-3 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl shadow-lg shadow-slate-200 transition-all active:scale-95">
+                查看本次记录
+            </button>
+            <button id="quizCloseBtn" class="hidden w-full py-3 mt-3 bg-white hover:bg-slate-50 text-slate-700 font-bold rounded-xl border border-slate-200 transition-all active:scale-95">
+                关闭
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 滚动时显示导航栏标题
+        window.addEventListener('scroll', () => {
+            const navTitle = document.getElementById('navTitleWrapper');
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                navTitle.classList.remove('opacity-0');
+                navbar.classList.add('bg-white/80', 'backdrop-blur-md', 'shadow-sm');
+            } else {
+                navTitle.classList.add('opacity-0');
+                navbar.classList.remove('bg-white/80', 'backdrop-blur-md', 'shadow-sm');
+            }
+        });
+
+        // 页面加载完成后获取课程内容 - 已移至底部统一处理
+        
+        function loadKnowledgeContent() {
+            try {
+                const contentData = sessionStorage.getItem('currentKnowledgeContent');
+                
+                if (!contentData) {
+                    showError();
+                    return;
+                }
+                
+                const data = JSON.parse(contentData);
+                displayContent(data);
+                
+            } catch (error) {
+                console.error('加载课程内容失败:', error);
+                showError();
+            }
+        }
+        
+        function displayContent(data) {
+            // 隐藏加载状态
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('content').classList.remove('hidden');
+            
+            // 设置标题
+            document.getElementById('navTitle').textContent = data.title;
+            document.getElementById('courseTitle').textContent = data.title;
+            
+            // 设置分类Tag
+            document.getElementById('categoryTag').textContent = data.category || 'COURSE';
+            
+            // 设置元数据
+            document.getElementById('courseCategory').textContent = data.category || '通用课程';
+            document.getElementById('courseDuration').textContent = data.duration || '标准时长';
+            document.getElementById('courseLevel').textContent = data.level || '初级';
+            
+            // 生成面包屑路径
+            const pathContainer = document.getElementById('categoryPathContainer');
+            let paths = [data.category];
+            if (data.subCategory) paths.push(data.subCategory);
+            if (data.specificCategory) paths.push(data.specificCategory);
+            
+            pathContainer.innerHTML = paths.filter(p => p).map((p, index) => {
+                const isLast = index === paths.length - 1;
+                return `
+                    <span class="${isLast ? 'text-indigo-600 font-semibold' : 'hover:text-indigo-500 transition-colors cursor-default'}">${p}</span>
+                    ${!isLast ? '<i class="fa-solid fa-chevron-right text-[10px] text-slate-300 mx-1"></i>' : ''}
+                `;
+            }).join('');
+            
+            // 渲染正文
+            const contentElement = document.getElementById('knowledgeContent');
+            contentElement.innerHTML = formatKnowledgeContent(data.content);
+            
+            // 初始化折叠功能
+            initCollapsibleHeaders();
+            
+            // 加载视频
+            if (data.id || data.directVideoUrl) {
+                loadCourseVideo(data.id, data.videoApi, data.directVideoUrl);
+            }
+
+            requestAnimationFrame(() => {
+                trackScrollProgress();
+                checkQuestions();
+            });
+        }
+        
+        // 核心功能：初始化标题折叠
+        function initCollapsibleHeaders() {
+            const headers = document.querySelectorAll('#knowledgeContent h1, #knowledgeContent h2, #knowledgeContent h3, #knowledgeContent h4');
+            
+            if (headers.length === 0) return;
+            
+            headers.forEach(header => {
+                // 过滤空标题：如果标题内容为空或只有空白字符，则隐藏该标题
+                const headerText = header.textContent.trim();
+                if (!headerText) {
+                    header.style.display = 'none';
+                    return;
+                }
+                
+                const contentSpan = document.createElement('span');
+                while (header.firstChild) {
+                    contentSpan.appendChild(header.firstChild);
+                }
+                header.appendChild(contentSpan);
+
+                header.classList.add('collapsible-header');
+                header.title = '点击展开/折叠';
+                
+                header.addEventListener('click', function() {
+                    this.classList.toggle('collapsed');
+                    const isCollapsed = this.classList.contains('collapsed');
+                    
+                    let next = this.nextElementSibling;
+                    const currentTagName = this.tagName;
+                    
+                    while (next) {
+                        const nextTagName = next.tagName;
+                        const currLevel = parseInt(currentTagName.substring(1));
+                        
+                        if (/^H[1-6]$/.test(nextTagName)) {
+                            const nextLevel = parseInt(nextTagName.substring(1));
+                            if (nextLevel <= currLevel) break;
+                        }
+                        
+                        if (isCollapsed) {
+                            next.classList.add('hidden');
+                        } else {
+                            next.classList.remove('hidden');
+                        }
+                        next = next.nextElementSibling;
+                    }
+                });
+            });
+        }
+        
+        // 视频相关变量
+        let isPreviewMode = false;
+        let previewDuration = 30; // 默认30秒
+        let previewScrollLockEnabled = false;
+        let previewScrollThreshold = 0;
+        let touchStartY = null;
+        const PREVIEW_MAX_DURATION = 30;
+        const PREVIEW_SCROLL_LOCK_OFFSET = 420;
+        
+        function buildVideoApiUrl(baseURL, videoPath, courseId) {
+            // 支持 path 参数接口：/xxx/video/play/{courseId}
+            if (videoPath.includes('dept-course') || videoPath.includes('green-hotel-course')) {
+                return baseURL + videoPath + '/' + courseId;
+            }
+            // 默认 query 参数接口：/train/video/play?courseId=xx
+            return baseURL + videoPath + '?courseId=' + courseId;
+        }
+        
+        function setPreviewScrollLockState(enabled) {
+            previewScrollLockEnabled = !!enabled;
+            const mask = document.getElementById('previewScrollMask');
+            if (!previewScrollLockEnabled) {
+                if (mask) mask.classList.add('hidden');
+                previewScrollThreshold = 0;
+            }
+        }
+        
+        function setupPreviewScrollLock() {
+            if (!isPreviewMode) {
+                setPreviewScrollLockState(false);
+                return;
+            }
+            const knowledgeContent = document.getElementById('knowledgeContent');
+            const pageMaxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+            if (!knowledgeContent || pageMaxScroll <= 0) {
+                setPreviewScrollLockState(false);
+                return;
+            }
+            const contentTop = knowledgeContent.getBoundingClientRect().top + window.scrollY;
+            const desired = contentTop + PREVIEW_SCROLL_LOCK_OFFSET;
+            previewScrollThreshold = Math.min(desired, Math.max(0, pageMaxScroll - 24));
+            setPreviewScrollLockState(previewScrollThreshold > 0);
+            handlePreviewScrollLock();
+        }
+        
+        function handlePreviewScrollLock() {
+            if (!previewScrollLockEnabled) {
+                return;
+            }
+            const currentTop = window.scrollY || document.documentElement.scrollTop || 0;
+            const mask = document.getElementById('previewScrollMask');
+            if (currentTop > previewScrollThreshold) {
+                if (mask) mask.classList.remove('hidden');
+                window.scrollTo(0, previewScrollThreshold);
+            } else {
+                if (mask) mask.classList.add('hidden');
+            }
+        }
+        
+        function onPreviewWheel(event) {
+            if (!previewScrollLockEnabled) return;
+            const currentTop = window.scrollY || document.documentElement.scrollTop || 0;
+            if (currentTop >= previewScrollThreshold - 2 && event.deltaY > 0) {
+                event.preventDefault();
+                const mask = document.getElementById('previewScrollMask');
+                if (mask) mask.classList.remove('hidden');
+            }
+        }
+        
+        function onPreviewTouchStart(event) {
+            if (!previewScrollLockEnabled || !event.touches || event.touches.length === 0) return;
+            touchStartY = event.touches[0].clientY;
+        }
+        
+        function onPreviewTouchMove(event) {
+            if (!previewScrollLockEnabled || touchStartY === null || !event.touches || event.touches.length === 0) return;
+            const currentTop = window.scrollY || document.documentElement.scrollTop || 0;
+            const currentY = event.touches[0].clientY;
+            const swipeUp = touchStartY > currentY;
+            if (currentTop >= previewScrollThreshold - 2 && swipeUp) {
+                event.preventDefault();
+                const mask = document.getElementById('previewScrollMask');
+                if (mask) mask.classList.remove('hidden');
+            }
+        }
+        
+        async function loadCourseVideo(courseId, customVideoApi, directVideoUrl) {
+            const videoSection = document.getElementById('videoSection');
+            const videoLoading = document.getElementById('videoLoading');
+            const videoError = document.getElementById('videoError');
+            const videoPlayerContainer = document.getElementById('videoPlayerContainer');
+            const videoPlayer = document.getElementById('courseVideo');
+            const previewToast = document.getElementById('previewToast');
+            
+            videoSection.classList.remove('hidden');
+            
+            try {
+                if (directVideoUrl) {
+                    isPreviewMode = false;
+                    previewToast.classList.add('hidden');
+                    videoPlayer.src = directVideoUrl;
+                    videoLoading.style.display = 'none';
+                    videoPlayerContainer.classList.remove('hidden');
+                    setupPreviewScrollLock();
+                    return;
+                }
+
+                const baseURL = window.__BACKEND_BASE__ || '/';
+                // 支持自定义视频接口，默认使用学习推荐的接口
+                const videoPath = customVideoApi || 'train/video/play';
+                const apiURL = buildVideoApiUrl(baseURL, videoPath, courseId);
+                
+                const token = localStorage.getItem('authToken');
+                const headers = { 'Content-Type': 'application/json' };
+                if (token) headers['Authorization'] = 'Bearer ' + token;
+                
+                const response = await fetch(apiURL, { method: 'GET', headers: headers });
+                
+                if (!response.ok) throw new Error('Network response was not ok');
+                
+                const result = await response.json();
+                
+                // 兼容两种返回格式：result.data.url 或 result.url
+                const videoUrl = (result.data && result.data.url) || result.url;
+                
+                // 检查是否试看模式
+                if (result.data && result.data.isPreview) {
+                    isPreviewMode = true;
+                    const rawPreviewDuration = Number(result.data.previewDuration) || PREVIEW_MAX_DURATION;
+                    previewDuration = Math.min(PREVIEW_MAX_DURATION, Math.max(1, rawPreviewDuration));
+                    previewToast.classList.remove('hidden');
+                    updatePreviewCountdown(0);
+                    setupPreviewScrollLock();
+                } else {
+                    isPreviewMode = false;
+                    previewToast.classList.add('hidden');
+                    setPreviewScrollLockState(false);
+                }
+                
+                if (result.code === 200 && videoUrl) {
+                    videoPlayer.src = videoUrl;
+                    videoLoading.style.display = 'none';
+                    videoPlayerContainer.classList.remove('hidden');
+                    
+                    videoPlayer.addEventListener('error', function() {
+                        videoPlayerContainer.classList.add('hidden');
+                        videoError.classList.remove('hidden');
+                    });
+                } else {
+                    throw new Error('Video not found');
+                }
+            } catch (error) {
+                console.error('Video load failed:', error);
+                videoLoading.style.display = 'none';
+                videoError.classList.remove('hidden');
+            }
+        }
+        
+        function updatePreviewCountdown(currentTime) {
+            const remaining = Math.max(0, Math.ceil(previewDuration - currentTime));
+            const el = document.getElementById('previewCountDown');
+            if (el) el.textContent = remaining;
+            
+            // 如果剩余时间少于5秒，变成红色警告
+            if (remaining <= 5 && el) {
+                el.classList.add('text-red-500');
+                el.classList.remove('text-amber-400');
+            }
+        }
+        
+        function replayPreview() {
+            const videoPlayer = document.getElementById('courseVideo');
+            const overlay = document.getElementById('previewOverlay');
+            const mask = document.getElementById('previewScrollMask');
+            
+            videoPlayer.currentTime = 0;
+            videoPlayer.play();
+            overlay.classList.add('hidden');
+            if (mask) mask.classList.add('hidden');
+        }
+        
+        function formatKnowledgeContent(content) {
+            if (!content) return '<div class="p-8 border-2 border-dashed border-slate-200 rounded-2xl text-slate-400 text-center">暂无详细内容</div>';
+            
+            try {
+                let processedContent = content;
+
+                // 0. 预处理：修复乱码图标 ( -> FontAwesome)
+                // 必须最先执行，防止乱码干扰后续的分段和表格识别
+                processedContent = fixSpecialIcons(processedContent);
+
+                // 1. 预处理：修复段落 (最优先！先把一坨文字拆开)
+                processedContent = autoFixParagraphs(processedContent);
+
+                // 2. 预处理：修复表格 (在分段之后进行)
+                processedContent = autoFixTables(processedContent);
+                
+                // 3. 预处理：修复标题
+                processedContent = autoFixHeadings(processedContent);
+                
+                // 4. 预处理：修复 Markdown 标题空格
+                processedContent = processedContent.replace(/(^|\n)(#{1,6})([^\s#])/g, '$1$2 $3');
+
+                // 5. 兜底：将剩余的单换行符转换为双换行符
+                processedContent = processedContent.replace(/([^\n|])\n([^\n|])/g, '$1\n\n$2');
+
+                marked.setOptions({ breaks: true, gfm: true });
+                return marked.parse(processedContent);
+            } catch (e) {
+                console.error('Format error:', e);
+                // 降级处理：如果 marked 加载失败，至少把换行符转换一下，避免"文字成一坨"
+                return `<div class="whitespace-pre-wrap">${content.replace(/\n/g, '<br>')}</div>`;
+            }
+        }
+
+        // 修复 emoji 并替换为 FontAwesome 图标（解决字体兼容性问题）
+        function fixSpecialIcons(content) {
+            let result = content;
+            
+            // === 第零步：处理数据库中 emoji 变成问号的情况 ===
+            // 当数据库字符集不支持 4 字节 emoji 时，emoji 会变成 ?
+            // 我们需要根据上下文智能处理这些问号
+            
+            // 行首的问号 + 空格 + 中文标题 → 删除问号（原本可能是 📊 🏆 等装饰性 emoji）
+            result = result.replace(/^\?\s+(?=[\u4e00-\u9fa5])/gm, '');
+            // 行首的问号 + 中文 → 删除问号
+            result = result.replace(/^\?(?=[\u4e00-\u9fa5])/gm, '');
+            // 中文后面紧跟的问号（不是句末）→ 删除
+            result = result.replace(/([\u4e00-\u9fa5])\?(?=[\u4e00-\u9fa5])/g, '$1');
+            // 连续多个问号 → 保留一个（可能是真正的问号）
+            result = result.replace(/\?{2,}/g, '?');
+            
+            // === 第一步：全面的 emoji → FontAwesome 映射 ===
+            const emojiMap = {
+                // 灯泡/想法类
+                '💡': '<i class="fa-regular fa-lightbulb text-yellow-500 mr-1"></i>',
+                '💭': '<i class="fa-regular fa-comment text-slate-400 mr-1"></i>',
+                '🧠': '<i class="fa-solid fa-brain text-pink-500 mr-1"></i>',
+                
+                // 勾选/确认类
+                '✅': '<i class="fa-solid fa-square-check text-green-500 mr-1"></i>',
+                '☑️': '<i class="fa-solid fa-square-check text-green-500 mr-1"></i>',
+                '✓': '<i class="fa-solid fa-check text-green-500 mr-1"></i>',
+                '✔': '<i class="fa-solid fa-check text-green-500 mr-1"></i>',
+                '✔️': '<i class="fa-solid fa-check text-green-500 mr-1"></i>',
+                
+                // 叉号/错误类
+                '❌': '<i class="fa-solid fa-xmark text-red-500 mr-1"></i>',
+                '✗': '<i class="fa-solid fa-xmark text-red-500 mr-1"></i>',
+                '✘': '<i class="fa-solid fa-xmark text-red-500 mr-1"></i>',
+                
+                // 警告/注意类
+                '⚠️': '<i class="fa-solid fa-triangle-exclamation text-amber-500 mr-1"></i>',
+                '⚠': '<i class="fa-solid fa-triangle-exclamation text-amber-500 mr-1"></i>',
+                '🚨': '<i class="fa-solid fa-bell text-red-500 mr-1"></i>',
+                '❗': '<i class="fa-solid fa-exclamation text-red-500 mr-1"></i>',
+                '❕': '<i class="fa-solid fa-exclamation text-amber-500 mr-1"></i>',
+                '‼️': '<i class="fa-solid fa-exclamation text-red-500 mr-1"></i>',
+                '⁉️': '<i class="fa-solid fa-question text-amber-500 mr-1"></i>',
+                
+                // 问号类
+                '❓': '<i class="fa-solid fa-question text-blue-500 mr-1"></i>',
+                '❔': '<i class="fa-regular fa-circle-question text-slate-400 mr-1"></i>',
+                '🤔': '<i class="fa-solid fa-question text-amber-500 mr-1"></i>',
+                
+                // 星星/重点类
+                '⭐': '<i class="fa-solid fa-star text-yellow-400 mr-1"></i>',
+                '🌟': '<i class="fa-solid fa-star text-yellow-500 mr-1"></i>',
+                '✨': '<i class="fa-solid fa-sparkles text-yellow-400 mr-1"></i>',
+                '💫': '<i class="fa-solid fa-star text-indigo-400 mr-1"></i>',
+                '★': '<i class="fa-solid fa-star text-yellow-500 mr-1"></i>',
+                '☆': '<i class="fa-regular fa-star text-yellow-500 mr-1"></i>',
+                
+                // 箭头/指向类
+                '👉': '<i class="fa-solid fa-hand-point-right text-amber-500 mr-1"></i>',
+                '👆': '<i class="fa-solid fa-hand-point-up text-amber-500 mr-1"></i>',
+                '➡️': '<i class="fa-solid fa-arrow-right text-blue-500 mr-1"></i>',
+                '➜': '<i class="fa-solid fa-arrow-right text-blue-500 mr-1"></i>',
+                '→': '<i class="fa-solid fa-arrow-right text-slate-400 mr-1"></i>',
+                '▶': '<i class="fa-solid fa-play text-blue-500 mr-1"></i>',
+                '▶️': '<i class="fa-solid fa-play text-blue-500 mr-1"></i>',
+                
+                // 圆点/列表类
+                '🔹': '<i class="fa-solid fa-diamond text-blue-400 mr-1 text-xs"></i>',
+                '🔸': '<i class="fa-solid fa-diamond text-orange-400 mr-1 text-xs"></i>',
+                '🔷': '<i class="fa-solid fa-diamond text-blue-500 mr-1"></i>',
+                '🔶': '<i class="fa-solid fa-diamond text-orange-500 mr-1"></i>',
+                '💠': '<i class="fa-solid fa-diamond text-cyan-500 mr-1"></i>',
+                '●': '<i class="fa-solid fa-circle text-slate-600 mr-1 text-xs"></i>',
+                '○': '<i class="fa-regular fa-circle text-slate-400 mr-1 text-xs"></i>',
+                '◆': '<i class="fa-solid fa-diamond text-slate-600 mr-1 text-xs"></i>',
+                '◇': '<i class="fa-regular fa-square text-slate-400 mr-1 text-xs"></i>',
+                '▪': '<i class="fa-solid fa-square text-slate-600 mr-1 text-xs"></i>',
+                '▫': '<i class="fa-regular fa-square text-slate-400 mr-1 text-xs"></i>',
+                '•': '<i class="fa-solid fa-circle text-slate-500 mr-1 text-xs"></i>',
+                
+                // 数字/序号类
+                '①': '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-indigo-100 text-indigo-600 text-xs font-bold mr-1">1</span>',
+                '②': '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-indigo-100 text-indigo-600 text-xs font-bold mr-1">2</span>',
+                '③': '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-indigo-100 text-indigo-600 text-xs font-bold mr-1">3</span>',
+                '④': '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-indigo-100 text-indigo-600 text-xs font-bold mr-1">4</span>',
+                '⑤': '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-indigo-100 text-indigo-600 text-xs font-bold mr-1">5</span>',
+                '⑥': '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-indigo-100 text-indigo-600 text-xs font-bold mr-1">6</span>',
+                '⑦': '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-indigo-100 text-indigo-600 text-xs font-bold mr-1">7</span>',
+                '⑧': '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-indigo-100 text-indigo-600 text-xs font-bold mr-1">8</span>',
+                '⑨': '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-indigo-100 text-indigo-600 text-xs font-bold mr-1">9</span>',
+                '⑩': '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-indigo-100 text-indigo-600 text-xs font-bold mr-1">10</span>',
+                
+                // 书籍/学习类
+                '📚': '<i class="fa-solid fa-book text-blue-500 mr-1"></i>',
+                '📖': '<i class="fa-solid fa-book-open text-blue-500 mr-1"></i>',
+                '📝': '<i class="fa-solid fa-pen-to-square text-slate-500 mr-1"></i>',
+                '✏️': '<i class="fa-solid fa-pencil text-amber-500 mr-1"></i>',
+                '🎯': '<i class="fa-solid fa-bullseye text-red-500 mr-1"></i>',
+                '🎓': '<i class="fa-solid fa-graduation-cap text-slate-700 mr-1"></i>',
+                
+                // 图钉/标记类
+                '📌': '<i class="fa-solid fa-thumbtack text-red-500 mr-1"></i>',
+                '📍': '<i class="fa-solid fa-location-dot text-red-500 mr-1"></i>',
+                '🔖': '<i class="fa-solid fa-bookmark text-amber-500 mr-1"></i>',
+                
+                // 火箭/进步类
+                '🚀': '<i class="fa-solid fa-rocket text-indigo-500 mr-1"></i>',
+                '💪': '<i class="fa-solid fa-dumbbell text-slate-600 mr-1"></i>',
+                '🏆': '<i class="fa-solid fa-trophy text-yellow-500 mr-1"></i>',
+                '🥇': '<i class="fa-solid fa-medal text-yellow-500 mr-1"></i>',
+                
+                // 时间类
+                '⏰': '<i class="fa-regular fa-clock text-slate-500 mr-1"></i>',
+                '🕐': '<i class="fa-regular fa-clock text-slate-500 mr-1"></i>',
+                '📅': '<i class="fa-regular fa-calendar text-blue-500 mr-1"></i>',
+                
+                // 工具类
+                '🔧': '<i class="fa-solid fa-wrench text-slate-500 mr-1"></i>',
+                '⚙️': '<i class="fa-solid fa-gear text-slate-500 mr-1"></i>',
+                '🔑': '<i class="fa-solid fa-key text-yellow-500 mr-1"></i>',
+                '🔒': '<i class="fa-solid fa-lock text-slate-500 mr-1"></i>',
+                '🔓': '<i class="fa-solid fa-lock-open text-green-500 mr-1"></i>',
+                
+                // 通讯类
+                '📞': '<i class="fa-solid fa-phone text-green-500 mr-1"></i>',
+                '📧': '<i class="fa-solid fa-envelope text-blue-500 mr-1"></i>',
+                '💬': '<i class="fa-solid fa-comment text-blue-500 mr-1"></i>',
+                '🗣️': '<i class="fa-solid fa-comment-dots text-slate-500 mr-1"></i>',
+                
+                // 金钱类
+                '💰': '<i class="fa-solid fa-sack-dollar text-yellow-500 mr-1"></i>',
+                '💵': '<i class="fa-solid fa-money-bill text-green-500 mr-1"></i>',
+                '💲': '<i class="fa-solid fa-dollar-sign text-green-500 mr-1"></i>',
+                
+                // 心形类
+                '❤️': '<i class="fa-solid fa-heart text-red-500 mr-1"></i>',
+                '💖': '<i class="fa-solid fa-heart text-pink-500 mr-1"></i>',
+                '💗': '<i class="fa-solid fa-heart text-pink-400 mr-1"></i>',
+                '👍': '<i class="fa-solid fa-thumbs-up text-blue-500 mr-1"></i>',
+                '👎': '<i class="fa-solid fa-thumbs-down text-slate-500 mr-1"></i>',
+                
+                // 其他常用
+                '🔥': '<i class="fa-solid fa-fire text-orange-500 mr-1"></i>',
+                '⚡': '<i class="fa-solid fa-bolt text-yellow-500 mr-1"></i>',
+                '🌈': '<i class="fa-solid fa-rainbow text-indigo-400 mr-1"></i>',
+                '☀️': '<i class="fa-solid fa-sun text-yellow-500 mr-1"></i>',
+                '🌙': '<i class="fa-solid fa-moon text-indigo-400 mr-1"></i>',
+                '🔗': '<i class="fa-solid fa-link text-blue-500 mr-1"></i>',
+                '📊': '<i class="fa-solid fa-chart-bar text-blue-500 mr-1"></i>',
+                '📈': '<i class="fa-solid fa-chart-line text-green-500 mr-1"></i>',
+                '📉': '<i class="fa-solid fa-chart-line text-red-500 mr-1"></i>',
+                '🏠': '<i class="fa-solid fa-house text-slate-600 mr-1"></i>',
+                '🏨': '<i class="fa-solid fa-hotel text-indigo-500 mr-1"></i>',
+                '👤': '<i class="fa-solid fa-user text-slate-500 mr-1"></i>',
+                '👥': '<i class="fa-solid fa-users text-slate-500 mr-1"></i>',
+                '🎉': '<i class="fa-solid fa-party-horn text-pink-500 mr-1"></i>',
+                '🎊': '<i class="fa-solid fa-confetti text-purple-500 mr-1"></i>',
+            };
+            
+            // 替换所有已知的 emoji
+            for (const [emoji, icon] of Object.entries(emojiMap)) {
+                result = result.split(emoji).join(icon);
+            }
+            
+            // === 第二步：处理带关键词的特殊符号组合 ===
+            // 匹配各种装饰符号 + 关键词，替换为语义化图标
+            const keywordPatterns = [
+                { pattern: /[◆◇♦◈❖💠🔷🔶🔹🔸💡❓❗⁉‼✨⭐🌟\uFFFD]+\s*启示/g, icon: '<i class="fa-regular fa-lightbulb text-yellow-500 mr-1"></i> 启示' },
+                { pattern: /[◆◇♦◈❖💠🔷🔶🔹🔸💡❓❗⁉‼✨⭐🌟\uFFFD]+\s*建议/g, icon: '<i class="fa-regular fa-lightbulb text-yellow-500 mr-1"></i> 建议' },
+                { pattern: /[◆◇♦◈❖💠🔷🔶🔹🔸💡❓❗⁉‼✨⭐🌟\uFFFD]+\s*提示/g, icon: '<i class="fa-solid fa-thumbtack text-indigo-500 mr-1"></i> 提示' },
+                { pattern: /[◆◇♦◈❖💠🔷🔶🔹🔸💡❓❗⁉‼✨⭐🌟\uFFFD]+\s*注意事项/g, icon: '<i class="fa-solid fa-triangle-exclamation text-red-500 mr-1"></i> 注意事项' },
+                { pattern: /[◆◇♦◈❖💠🔷🔶🔹🔸💡❓❗⁉‼✨⭐🌟\uFFFD]+\s*注意/g, icon: '<i class="fa-solid fa-triangle-exclamation text-amber-500 mr-1"></i> 注意' },
+                { pattern: /[◆◇♦◈❖💠🔷🔶🔹🔸💡❓❗⁉‼✨⭐🌟\uFFFD]+\s*目标/g, icon: '<i class="fa-solid fa-bullseye text-red-500 mr-1"></i> 目标' },
+                { pattern: /[◆◇♦◈❖💠🔷🔶🔹🔸💡❓❗⁉‼✨⭐🌟\uFFFD]+\s*关键点/g, icon: '<i class="fa-solid fa-thumbtack text-indigo-500 mr-1"></i> 关键点' },
+                { pattern: /[◆◇♦◈❖💠🔷🔶🔹🔸💡❓❗⁉‼✨⭐🌟\uFFFD]+\s*(重点|要点|关键)/g, icon: '<i class="fa-solid fa-star text-yellow-500 mr-1"></i> $1' },
+                { pattern: /[◆◇♦◈❖💠🔷🔶🔹🔸💡❓❗⁉‼✨⭐🌟\uFFFD]+\s*(说明|备注|补充)/g, icon: '<i class="fa-solid fa-circle-info text-blue-500 mr-1"></i> $1' },
+                { pattern: /[◆◇♦◈❖💠🔷🔶🔹🔸💡❓❗⁉‼✨⭐🌟\uFFFD]+\s*(总结|小结|结论)/g, icon: '<i class="fa-solid fa-clipboard-check text-green-500 mr-1"></i> $1' },
+                { pattern: /[◆◇♦◈❖💠🔷🔶🔹🔸💡❓❗⁉‼✨⭐🌟\uFFFD]+\s*(案例|示例|例子)/g, icon: '<i class="fa-solid fa-file-lines text-blue-500 mr-1"></i> $1' },
+                { pattern: /[◆◇♦◈❖💠🔷🔶🔹🔸💡❓❗⁉‼✨⭐🌟\uFFFD]+\s*(步骤|流程|方法)/g, icon: '<i class="fa-solid fa-list-ol text-indigo-500 mr-1"></i> $1' },
+                { pattern: /[◆◇♦◈❖💠🔷🔶🔹🔸💡❓❗⁉‼✨⭐🌟\uFFFD]+\s*(优势|优点|好处)/g, icon: '<i class="fa-solid fa-thumbs-up text-green-500 mr-1"></i> $1' },
+                { pattern: /[◆◇♦◈❖💠🔷🔶🔹🔸💡❓❗⁉‼✨⭐🌟\uFFFD]+\s*(劣势|缺点|问题)/g, icon: '<i class="fa-solid fa-thumbs-down text-red-500 mr-1"></i> $1' },
+            ];
+            
+            for (const { pattern, icon } of keywordPatterns) {
+                result = result.replace(pattern, icon);
+            }
+            
+            // === 第三步：处理更多特殊符号（有语义的转换，无语义的删除）===
+            
+            // 3.1 有语义的符号 → 转换为图标或文字
+            const semanticSymbols = {
+                // 对错符号
+                '√': '<i class="fa-solid fa-check text-green-500 mr-1"></i>',
+                '×': '<i class="fa-solid fa-xmark text-red-500 mr-1"></i>',
+                '〇': '',  // 日文零，通常无意义
+                
+                // 注释符号
+                '※': '<i class="fa-solid fa-asterisk text-slate-500 mr-1"></i>',
+                '＊': '',  // 全角星号，通常是装饰
+                
+                // 箭头符号（非emoji）
+                '←': '<i class="fa-solid fa-arrow-left text-slate-400 mr-1"></i>',
+                '↑': '<i class="fa-solid fa-arrow-up text-slate-400 mr-1"></i>',
+                '↓': '<i class="fa-solid fa-arrow-down text-slate-400 mr-1"></i>',
+                '↔': '<i class="fa-solid fa-arrows-left-right text-slate-400 mr-1"></i>',
+                '↕': '<i class="fa-solid fa-arrows-up-down text-slate-400 mr-1"></i>',
+                '⇒': '<i class="fa-solid fa-arrow-right text-blue-500 mr-1"></i>',
+                '⇐': '<i class="fa-solid fa-arrow-left text-blue-500 mr-1"></i>',
+                '⇔': '<i class="fa-solid fa-arrows-left-right text-blue-500 mr-1"></i>',
+                '➤': '<i class="fa-solid fa-caret-right text-slate-500 mr-1"></i>',
+                '➢': '<i class="fa-solid fa-caret-right text-slate-400 mr-1"></i>',
+                '➣': '<i class="fa-solid fa-caret-right text-slate-400 mr-1"></i>',
+                '➔': '<i class="fa-solid fa-arrow-right text-slate-500 mr-1"></i>',
+                '➝': '<i class="fa-solid fa-arrow-right text-slate-400 mr-1"></i>',
+                '➞': '<i class="fa-solid fa-arrow-right text-slate-400 mr-1"></i>',
+                
+                // 三角形（通常用作列表标记）
+                '▲': '<i class="fa-solid fa-caret-up text-slate-500 mr-1"></i>',
+                '△': '',
+                '▼': '<i class="fa-solid fa-caret-down text-slate-500 mr-1"></i>',
+                '▽': '',
+                '▸': '<i class="fa-solid fa-caret-right text-slate-500 mr-1"></i>',
+                '▹': '',
+                '◂': '<i class="fa-solid fa-caret-left text-slate-500 mr-1"></i>',
+                '◃': '',
+                '►': '<i class="fa-solid fa-caret-right text-slate-600 mr-1"></i>',
+                '◄': '<i class="fa-solid fa-caret-left text-slate-600 mr-1"></i>',
+                
+                // 方块（通常用作列表标记）
+                '■': '<i class="fa-solid fa-square text-slate-600 mr-1 text-xs"></i>',
+                '□': '<i class="fa-regular fa-square text-slate-400 mr-1 text-xs"></i>',
+                '▢': '',
+                '▣': '',
+                
+                // 圆形变体
+                '◉': '<i class="fa-solid fa-circle text-slate-600 mr-1 text-xs"></i>',
+                '◎': '<i class="fa-regular fa-circle text-slate-400 mr-1 text-xs"></i>',
+                '⊙': '',
+                '⊚': '',
+                '⊛': '',
+                
+                // 菱形变体
+                '◈': '',
+                '❖': '',
+                '⬥': '',
+                '⬦': '',
+                '⬧': '',
+                '⬨': '',
+                
+                // 其他装饰符号
+                '✦': '',
+                '✧': '',
+                '⟡': '',
+                '⯌': '',
+                '❖': '',
+                '✶': '',
+                '✷': '',
+                '✸': '',
+                '✹': '',
+                '✺': '',
+                '❋': '',
+                '❊': '',
+                '❉': '',
+                '❈': '',
+                '❇': '',
+                '❆': '',
+                '❅': '',
+                '❄': '',
+                '❃': '',
+                '❂': '',
+                '❁': '',
+                '❀': '',
+                '✿': '',
+                '✾': '',
+                '✽': '',
+                '✼': '',
+                '✻': '',
+            };
+            
+            for (const [symbol, replacement] of Object.entries(semanticSymbols)) {
+                result = result.split(symbol).join(replacement);
+            }
+            
+            // 3.2 移除所有剩余的装饰符号（不带关键词的孤立符号）
+            result = result
+                // 各种装饰性符号
+                .replace(/[◆◇♦◈❖⬥⬦⬧⬨▪▫●○◉◎★☆✦✧⟡⯌❓❗⁉‼💠🔷🔶🔹🔸💡✨⭐🌟📌🔹✦✧❖◈♦◇◆]/g, '')
+                // 制表符和边框字符
+                .replace(/[━─│┃┄┅┆┇┈┉┊┋╌╍╎╏═║╒╓╔╕╖╗╘╙╚╛╜╝╞╟╠╡╢╣╤╥╦╧╨╩╪╫╬]/g, '')
+                // 其他特殊装饰
+                .replace(/[〓〒〠〡〢〣〤〥〦〧〨〩〾〿]/g, '')
+                // 乱码字符
+                .replace(/\uFFFD/g, '')
+                // 零宽字符
+                .replace(/[\u200B-\u200D\uFEFF]/g, '')
+                // === 新增：更激进的 Unicode 范围清理 ===
+                // 杂项符号 (Miscellaneous Symbols) U+2600-U+26FF
+                // 但保留一些常用的，如 ☀ ☁ ☂ 等天气符号
+                // 装饰符号 (Dingbats) U+2700-U+27BF - 大部分是装饰性的
+                .replace(/[\u2700-\u27BF]/g, function(match) {
+                    // 保留一些有意义的符号
+                    const keep = ['✓', '✔', '✗', '✘', '✕', '✖', '✚', '✛', '✜', '✝', '✞', '✟'];
+                    return keep.includes(match) ? match : '';
+                })
+                // 几何图形 (Geometric Shapes) U+25A0-U+25FF - 大部分是装饰性的
+                .replace(/[\u25A0-\u25FF]/g, '')
+                // 杂项符号和箭头 (Miscellaneous Symbols and Arrows) U+2B00-U+2BFF
+                .replace(/[\u2B00-\u2BFF]/g, '')
+                // 补充符号 (Supplemental Symbols) - 很多显示不出来
+                .replace(/[\u2E00-\u2E7F]/g, '')  // 补充标点
+                // CJK 符号和标点中的装饰符号
+                .replace(/[〇〈〉《》「」『』【】〒〓〔〕〖〗〘〙〚〛〜〝〞〟]/g, function(match) {
+                    // 保留引号和括号
+                    const keep = ['「', '」', '『', '』', '【', '】', '《', '》', '〈', '〉', '〔', '〕'];
+                    return keep.includes(match) ? match : '';
+                })
+                // 私用区字符 (Private Use Area) - 通常显示为方块
+                .replace(/[\uE000-\uF8FF]/g, '')
+                // 变体选择符 (Variation Selectors) - 不可见但可能导致问题
+                .replace(/[\uFE00-\uFE0F]/g, '')
+                // 组合用字符 - 可能导致显示问题
+                .replace(/[\u0300-\u036F]/g, '');
+            
+            // === 第四步：智能修复 Markdown 加粗语法 ===
+            
+            // 4.1 先修复单个 * 结尾的情况（应该是 **）
+            // 例如: **精准触达高价值客户* → **精准触达高价值客户**
+            result = result.replace(/\*{2}([^*\n]+)\*(?!\*)/g, '**$1**');
+            
+            // 4.2 修复 **Part 2: 这种后面没有闭合的标题
+            // 例如: **Part 2: → ## Part 2:（转为标题）
+            result = result.replace(/^\*{2}(Part\s*\d+\s*[:：]?)\s*$/gim, '## $1');
+            
+            // 4.3 处理表格中的 "**" 引用（这是内容，不是 Markdown）
+            // 例如: 被"**"替代 → 被"星号"替代
+            result = result.replace(/"?\*{2}"?(?=替代|屏蔽|隐藏)/g, '"星号"');
+            
+            // 4.4 逐行处理不成对的 **
+            result = result.replace(/^(.*?)$/gm, function(line) {
+                // 跳过表格行（包含 |）
+                if (line.includes('|')) return line;
+                
+                // 统计 ** 的数量
+                const matches = line.match(/\*{2}/g);
+                if (!matches) return line;
+                
+                // 如果 ** 数量是偶数，说明成对，不处理
+                if (matches.length % 2 === 0) return line;
+                
+                // 奇数个 **，需要智能修复
+                // 情况1: 行首有 ** 但行末没有 → 在行末添加 **
+                if (/^\*{2}[^\*]/.test(line) && !/\*{2}\s*$/.test(line)) {
+                    const textAfterStars = line.replace(/^\*{2}/, '').trim();
+                    // 短文本（<60字符）且不是表格，补全 **
+                    if (textAfterStars.length < 60) {
+                        return line.replace(/\s*$/, '**');
+                    }
+                }
+                
+                // 情况2: 行末有 ** 但行首没有 → 删除行末的 **
+                if (!/^\*{2}/.test(line) && /\*{2}\s*$/.test(line)) {
+                    return line.replace(/\*{2}\s*$/, '');
+                }
+                
+                // 情况3: 中间有孤立的 **，尝试智能配对
+                // 例如: 名称：**"豪华双早" → 检查后面是否有闭合
+                let fixed = line;
+                
+                // 查找所有 ** 的位置
+                const positions = [];
+                let idx = 0;
+                while ((idx = fixed.indexOf('**', idx)) !== -1) {
+                    positions.push(idx);
+                    idx += 2;
+                }
+                
+                // 如果只有一个 **，根据位置决定处理方式
+                if (positions.length === 1) {
+                    const pos = positions[0];
+                    const before = fixed.substring(0, pos);
+                    const after = fixed.substring(pos + 2);
+                    
+                    // 如果 ** 在行首附近（前面只有空格或标点），尝试补全
+                    if (/^[\s，。：:]*$/.test(before) && after.length < 50) {
+                        fixed = before + '**' + after + '**';
+                    } else {
+                        // 否则删除这个孤立的 **
+                        fixed = before + after;
+                    }
+                }
+                
+                // 如果还有奇数个 **，直接删除所有
+                const remainingMatches = fixed.match(/\*{2}/g);
+                if (remainingMatches && remainingMatches.length % 2 !== 0) {
+                    fixed = fixed.replace(/\*{2}/g, '');
+                }
+                
+                return fixed;
+            });
+            
+            // 4.5 额外清理
+            result = result
+                .replace(/^\s*\*+\s*$/gm, '')           // 整行只有星号
+                .replace(/\*{3,}/g, '**')              // 3个及以上连续星号变成2个
+                .replace(/([。！？.!?，,])\s*\*{2}\s*$/gm, '$1')  // 标点后的 ** 残留
+                .replace(/\s+\*{2}\s+/g, ' ')          // 中间孤立的 ** (两边都有空格)
+                .replace(/\*{2}(?=\s*$)/gm, '');       // 行尾孤立的 **
+            
+            // === 第五步：清理其他无用内容 ===
+            result = result
+                // 清理多余的空行（超过2个连续空行变成2个）
+                .replace(/\n{4,}/g, '\n\n\n')
+                // 清理行首行尾的多余空格
+                .replace(/^[ \t]+/gm, '')
+                .replace(/[ \t]+$/gm, '')
+                // 清理重复的标点符号
+                .replace(/([。！？])\1+/g, '$1')
+                // 清理孤立的括号
+                .replace(/^\s*[（(]\s*$/gm, '')
+                .replace(/^\s*[）)]\s*$/gm, '')
+                // 清理孤立的引号
+                .replace(/^\s*["「『"']\s*$/gm, '')
+                .replace(/^\s*["」』"']\s*$/gm, '');
+            
+            // === 第六步：最终兜底 - 移除所有可能显示为方块的字符 ===
+            // 这是最后一道防线，移除所有非常规字符
+            // 保留：ASCII、拉丁扩展、中文、日文假名、全角字符、常用标点、Markdown语法字符
+            result = result.replace(/[^\x00-\x7F\u00A0-\u00FF\u0100-\u024F\u2000-\u206F\u3000-\u303F\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\uFF00-\uFFEF\n\r\t ，。！？、；：""''（）【】《》〈〉「」『』—…·～\-\*\|#\[\]`>_]/g, '');
+            
+            return result;
+        }
+
+        // 自动修复段落：强制分段
+        function autoFixParagraphs(content) {
+            let result = content;
+
+            // 1. 针对中文序号(一、)前强制添加双换行
+            result = result
+                .replace(/([^\n])\s*(一、|二、|三、|四、|五、|六、|七、|八、|九、|十、)/g, '$1\n\n$2')
+                .replace(/([^\n])\s*(PART \d+)/gi, '$1\n\n$2');
+            
+            // 2. 针对特殊符号(✅, 💡, 🚀, 📌, ⚠️)等列表项强制分段
+            // 智能策略：只有当符号后面没有竖线 | 时，才认为是新段落，防止切断表格内的符号
+            // (?![^\n]*\|) 是负向先行断言，表示后面直到换行符都不能出现 |
+            result = result.replace(/([✅💡🚀📌⚠️])(?![^\n]*\|)/g, '\n\n$1');
+
+            // 3. 针对潜在的表格开始进行强制换行
+            // 只在句子结尾（。.!?）后面跟着表格时才换行，避免拆开表格行
+            result = result.replace(/([。.!?！？])\s*([\u4e00-\u9fa5a-zA-Z0-9]+\s*\|\s*[\u4e00-\u9fa5a-zA-Z0-9]+\s*\|)/g, '$1\n\n$2');
+            
+            // 4. 处理中点列表项（· 开头的行）
+            // 将 · 转换为 Markdown 列表格式 -
+            result = result.replace(/^·\s*/gm, '- ');
+            result = result.replace(/\n·\s*/g, '\n- ');
+            
+            // 5. 处理点号子列表项（. 开头的行，通常是二级列表）
+            // 将 . 开头的行转换为缩进的列表项
+            result = result.replace(/^\.\s+/gm, '  - ');
+            result = result.replace(/\n\.\s+/g, '\n  - ');
+
+            return result;
+        }
+
+        // 自动修复表格：确保表格前后有空行，让 marked.js 能正确解析
+        function autoFixTables(content) {
+            let lines = content.split('\n');
+            const result = [];
+            
+            // 判断是否是表格行 (包含至少2个 |)
+            const isTableLine = (line) => {
+                const trimmed = line.trim();
+                if (!trimmed) return false;
+                if (!trimmed.includes('|')) return false;
+                const pipeCount = (trimmed.match(/\|/g) || []).length;
+                return pipeCount >= 2;
+            };
+            
+            // 判断是否是分隔行 (|---|---|)
+            const isSeparatorLine = (line) => {
+                const trimmed = line.trim();
+                return /^[\s|:\-]+$/.test(trimmed) && trimmed.includes('-') && trimmed.includes('|');
+            };
+            
+            let inTable = false;
+            let prevWasEmpty = true;
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const trimmed = line.trim();
+                const isTable = isTableLine(line) || isSeparatorLine(line);
+                
+                if (isTable && !inTable) {
+                    // 表格开始，确保前面有空行
+                    if (!prevWasEmpty && result.length > 0) {
+                        result.push('');
+                    }
+                    inTable = true;
+                } else if (!isTable && inTable) {
+                    // 表格结束，确保后面有空行
+                    if (trimmed !== '') {
+                        result.push('');
+                    }
+                    inTable = false;
+                }
+                
+                result.push(line);
+                prevWasEmpty = (trimmed === '');
+            }
+            
+            return result.join('\n');
+        }
+
+        // 自动修复标题：识别 "一、"、"PART XX" 等开头的短行
+        function autoFixHeadings(content) {
+            let result = content;
+            
+            // 1. 处理 PART XX：xxx 格式（转为二级标题）
+            // 匹配 PART 01：xxx、PART 1：xxx、PART 01:xxx 等格式
+            // 同时清理末尾可能残留的 ** 符号
+            result = result.replace(/(^|\n)\s*(PART\s*\d+\s*[：:]\s*)([^\n]+)/gi, function(match, prefix, partNum, text) {
+                // 清理标题末尾的 ** 残留
+                let cleanText = text.replace(/\*+\s*$/, '').trim();
+                // 如果已经是标题格式，不处理
+                if (cleanText.includes('#')) return match;
+                // 转换为二级标题
+                return `${prefix}## ${partNum}${cleanText}`;
+            });
+            
+            // 2. 处理中文序号 "一、" 等开头的短行（转为三级标题）
+            result = result.replace(/(^|\n)\s*([一二三四五六七八九十]+、)\s*([^\n]+)/g, function(match, prefix, num, text) {
+                // 清理标题末尾的 ** 残留
+                let cleanText = text.replace(/\*+\s*$/, '').trim();
+                // 如果这一行已经包含 #，或者字数太多(超过40字)，则不处理
+                if (cleanText.includes('#') || cleanText.length > 40) return match;
+                // 否则转换为三级标题
+                return `${prefix}### ${num}${cleanText}`;
+            });
+            
+            return result;
+        }
+        
+        function showError() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').classList.remove('hidden');
+        }
+        
+        function goBack() {
+            // 离开页面前上报最终进度
+            reportFinalProgress();
+            
+            if (window.opener && !window.opener.closed) {
+                sessionStorage.removeItem('currentKnowledgeContent');
+                sessionStorage.removeItem('knowledgeDetailReturnPath');
+                window.close();
+                return;
+            }
+            const returnPath = sessionStorage.getItem('knowledgeDetailReturnPath');
+            if (returnPath) {
+                sessionStorage.removeItem('currentKnowledgeContent');
+                sessionStorage.removeItem('knowledgeDetailReturnPath');
+                window.location.href = returnPath;
+            } else {
+                window.history.length > 1 ? window.history.back() : window.location.href = '/';
+                sessionStorage.removeItem('currentKnowledgeContent');
+            }
+        }
+        
+        // ========== 学习进度追踪模块 ==========
+        let courseData = null;           // 课程数据
+        let totalStudyTime = 0;          // 累计有效学习时间(毫秒)
+        let visibleStartTime = null;     // 当前可见期开始时间
+        let maxScrollPercent = 0;        // 最大滚动百分比
+        let videoProgress = 0;           // 视频播放进度 (0-100)
+        let videoDuration = 0;           // 视频总时长
+        let lastReportTime = 0;          // 上次上报时间
+        let isPageVisible = true;        // 页面是否可见
+        const REPORT_INTERVAL = 30000;   // 每30秒上报一次
+        
+        // 获取有效学习时长(秒) - 只计算页面可见时的时间
+        function getEffectiveStudyDuration() {
+            let duration = totalStudyTime;
+            // 如果当前页面可见，加上本次可见期的时间
+            if (isPageVisible && visibleStartTime) {
+                duration += Date.now() - visibleStartTime;
+            }
+            return Math.round(duration / 1000);
+        }
+        
+        // 处理页面可见性变化
+        function handleVisibilityChange() {
+            if (document.hidden) {
+                // 页面变为不可见 - 暂停计时
+                if (isPageVisible && visibleStartTime) {
+                    totalStudyTime += Date.now() - visibleStartTime;
+                    console.log('⏸️ 页面隐藏，暂停计时，已累计:', Math.round(totalStudyTime/1000), '秒');
+                }
+                isPageVisible = false;
+                visibleStartTime = null;
+                
+                // 暂停视频播放
+                const videoPlayer = document.getElementById('courseVideo');
+                if (videoPlayer && !videoPlayer.paused) {
+                    videoPlayer.pause();
+                    console.log('⏸️ 视频已暂停');
+                }
+            } else {
+                // 页面变为可见 - 恢复计时
+                isPageVisible = true;
+                visibleStartTime = Date.now();
+                console.log('▶️ 页面可见，恢复计时');
+                checkQuestions();
+            }
+        }
+        
+        // 初始化进度追踪
+        function initProgressTracking() {
+            const contentData = sessionStorage.getItem('currentKnowledgeContent');
+            if (contentData) {
+                courseData = JSON.parse(contentData);
+                console.log('📊 初始化进度追踪, courseId:', courseData.id);
+                // 加载随堂题目
+                if (courseData.id) {
+                    loadQuestions(courseData.id);
+                }
+            }
+            
+            // 初始化计时 - 页面打开时开始
+            isPageVisible = !document.hidden;
+            if (isPageVisible) {
+                visibleStartTime = Date.now();
+            }
+            
+            // 监听页面可见性变化 (核心：只有看着页面时才计时)
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+            
+            // 监听页面滚动
+            window.addEventListener('scroll', trackScrollProgress);
+            window.addEventListener('wheel', onPreviewWheel, { passive: false });
+            window.addEventListener('touchstart', onPreviewTouchStart, { passive: true });
+            window.addEventListener('touchmove', onPreviewTouchMove, { passive: false });
+            window.addEventListener('touchend', () => { touchStartY = null; }, { passive: true });
+            window.addEventListener('resize', setupPreviewScrollLock);
+            
+            // 监听视频播放
+            const videoPlayer = document.getElementById('courseVideo');
+            if (videoPlayer) {
+                const syncVideoProgress = () => {
+                    const duration = Number(videoPlayer.duration || 0);
+                    const currentTime = Number(videoPlayer.currentTime || 0);
+                    if (duration > 0) {
+                        videoDuration = duration;
+                        videoProgress = Math.round((currentTime / duration) * 100);
+                    }
+                };
+                videoPlayer.addEventListener('loadedmetadata', function() {
+                    syncVideoProgress();
+                    console.log('📹 视频时长:', videoDuration, '秒');
+                });
+                videoPlayer.addEventListener('timeupdate', function() {
+                    syncVideoProgress();
+                    
+                    // 检查随堂测验
+                    checkQuestions();
+                    
+                    // 试看模式控制
+                    if (isPreviewMode && videoPlayer.currentTime >= previewDuration) {
+                        videoPlayer.pause();
+                        videoPlayer.currentTime = previewDuration; // 强制停在试看结束点
+                        
+                        // 显示遮罩层
+                        const overlay = document.getElementById('previewOverlay');
+                        overlay.classList.remove('hidden');
+                        
+                        // 退出全屏（如果在全屏模式）
+                        if (document.fullscreenElement) {
+                            document.exitFullscreen().catch(err => console.log(err));
+                        }
+                    }
+                    
+                    if (isPreviewMode) {
+                        updatePreviewCountdown(videoPlayer.currentTime);
+                    }
+
+                    checkQuestions();
+                });
+                videoPlayer.addEventListener('ended', function() {
+                    videoProgress = 100;
+                    console.log('📹 视频播放完成');
+                    reportProgress();
+                    startCourseQuizWhenReady();
+                });
+                videoPlayer.addEventListener('seeked', function() {
+                    syncVideoProgress();
+                    checkQuestions();
+                });
+                videoPlayer.addEventListener('seeking', function() {
+                    syncVideoProgress();
+                });
+                videoPlayer.addEventListener('pause', function() {
+                    syncVideoProgress();
+                    checkQuestions();
+                });
+            }
+            
+            // 定时上报进度
+            setInterval(reportProgress, REPORT_INTERVAL);
+            
+            // 页面关闭/离开时上报
+            window.addEventListener('beforeunload', reportFinalProgress);
+            window.addEventListener('pagehide', reportFinalProgress);
+        }
+        
+        // 追踪滚动进度
+        function trackScrollProgress() {
+            const scrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+            const documentHeight = Math.max(
+                document.documentElement.scrollHeight || 0,
+                document.body.scrollHeight || 0
+            );
+            const scrollHeight = documentHeight - window.innerHeight;
+            if (scrollHeight > 0) {
+                const isNearBottom = scrollTop + window.innerHeight >= documentHeight - COURSE_QUIZ_SCROLL_BOTTOM_OFFSET;
+                const percent = isNearBottom ? 100 : Math.round((scrollTop / scrollHeight) * 100);
+                if (percent > maxScrollPercent) {
+                    maxScrollPercent = percent;
+                }
+            }
+            handlePreviewScrollLock();
+            checkQuestions();
+        }
+        
+        // 计算综合进度
+        function calculateOverallProgress() {
+            // 如果有视频，进度 = 视频进度 * 0.7 + 滚动进度 * 0.3
+            // 如果没有视频，进度 = 滚动进度
+            if (videoDuration > 0) {
+                return Math.round(videoProgress * 0.7 + maxScrollPercent * 0.3);
+            }
+            return maxScrollPercent;
+        }
+
+        function buildCourseTrackingPayload(progress, studyDuration) {
+            const courseType = courseData.courseType || inferQuestionSource(courseData);
+            return {
+                courseId: courseData.id,
+                courseName: courseData.title || '',
+                courseType: courseType,
+                courseMeta: Object.assign({}, courseData, { courseType: courseType }),
+                progress: progress,
+                studyDuration: studyDuration
+            };
+        }
+        
+        // 上报进度到后端
+        async function reportProgress() {
+            if (!courseData || !courseData.id) return;
+            // 页面不可见时不上报
+            if (!isPageVisible) return;
+            
+            const now = Date.now();
+            if (now - lastReportTime < REPORT_INTERVAL - 1000) return; // 防止重复上报
+            lastReportTime = now;
+            
+            const studyDuration = getEffectiveStudyDuration(); // 使用有效学习时长
+            const progress = calculateOverallProgress();
+            
+            console.log('📊 上报学习进度:', {
+                courseId: courseData.id,
+                progress: progress + '%',
+                studyDuration: studyDuration + '秒 (有效时间)',
+                videoProgress: videoProgress + '%',
+                scrollProgress: maxScrollPercent + '%'
+            });
+            
+            try {
+                const baseURL = window.__BACKEND_BASE__ || '/';
+                const token = localStorage.getItem('authToken');
+                const headers = { 'Content-Type': 'application/json' };
+                if (token) headers['Authorization'] = 'Bearer ' + token;
+                
+                await fetch(baseURL + 'train/user/course/progress', {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(buildCourseTrackingPayload(progress, studyDuration))
+                });
+            } catch (error) {
+                console.warn('上报进度失败:', error);
+            }
+        }
+        
+        // 离开页面时上报最终进度
+        function reportFinalProgress() {
+            if (!courseData || !courseData.id) return;
+            
+            const studyDuration = getEffectiveStudyDuration(); // 使用有效学习时长
+            const progress = calculateOverallProgress();
+            
+            console.log('📊 最终进度:', studyDuration + '秒 (有效学习时间)');
+            
+            // 使用 sendBeacon 确保数据发送（即使页面关闭）
+            const baseURL = window.__BACKEND_BASE__ || '/';
+            const token = localStorage.getItem('authToken');
+            
+            const data = JSON.stringify(buildCourseTrackingPayload(progress, studyDuration));
+            
+            // 尝试使用 sendBeacon
+            if (navigator.sendBeacon) {
+                const blob = new Blob([data], { type: 'application/json' });
+                navigator.sendBeacon(baseURL + 'train/user/course/progress', blob);
+                console.log('📊 使用 sendBeacon 上报最终进度');
+            }
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadKnowledgeContent();
+            initProgressTracking();
+        });
+
+        // ========== 结课测验模块 ==========
+        let courseQuestions = [];
+        let currentQuestion = null;
+        let selectedOptionValue = null;
+        let currentQuizIndex = 0;
+        let courseQuizStarted = false;
+        let courseQuizFinished = false;
+        let courseQuizStartPending = false;
+        let quizStartTime = null;
+        let quizAttemptId = null;
+        let quizResults = [];
+        const DEFAULT_COURSE_QUIZ_LIMIT = 5;
+        const COURSE_QUIZ_VIDEO_COMPLETE_PERCENT = 98;
+        const COURSE_QUIZ_SCROLL_COMPLETE_PERCENT = 95;
+        const COURSE_QUIZ_SCROLL_BOTTOM_OFFSET = 24;
+
+        function inferQuestionSource(data) {
+            const videoApi = String((data && data.videoApi) || '').toLowerCase();
+            const joined = [data?.category, data?.subCategory, data?.specificCategory, data?.title]
+                .filter(Boolean)
+                .join(' ')
+                .toLowerCase();
+            if (videoApi.includes('dept-course') || joined.includes('部门') || joined.includes('技能工坊')) {
+                return 'dept';
+            }
+            if (videoApi.includes('green-hotel-course') || joined.includes('绿色饭店')) {
+                return 'green_hotel';
+            }
+            if (joined.includes('企业文化')) {
+                return 'culture';
+            }
+            return 'ota';
+        }
+
+        function resolveQuestionCategory(data) {
+            const candidates = collectQuestionCategoryCandidates(data);
+            for (const item of candidates) {
+                const value = String(item || '').trim();
+                if (value) {
+                    return value;
+                }
+            }
+            return '';
+        }
+
+        function collectQuestionCategoryCandidates(data) {
+            const candidates = [
+                data?.specificCategory,
+                data?.title,
+                data?.subCategory,
+                data?.category
+            ];
+            return Array.from(new Set(
+                candidates
+                    .map(item => String(item || '').trim())
+                    .filter(Boolean)
+            ));
+        }
+
+        function buildCourseQuizKey(data) {
+            const source = inferQuestionSource(data);
+            const rawId = data && data.id;
+            if (rawId !== undefined && rawId !== null && String(rawId).trim()) {
+                return `${source}:course:${String(rawId).trim()}`;
+            }
+            const category = resolveQuestionCategory(data);
+            if (category) {
+                return `${source}:category:${category}`;
+            }
+            const title = String((data && data.title) || '').trim();
+            return title ? `${source}:title:${title}` : '';
+        }
+
+        function hasCompletedCourseContent() {
+            const hasFinishedArticle = maxScrollPercent >= COURSE_QUIZ_SCROLL_COMPLETE_PERCENT;
+            if (videoDuration > 0) {
+                return videoProgress >= COURSE_QUIZ_VIDEO_COMPLETE_PERCENT && hasFinishedArticle;
+            }
+            return hasFinishedArticle;
+        }
+
+        function getAuthHeaders() {
+            const token = localStorage.getItem('authToken');
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) {
+                headers['Authorization'] = 'Bearer ' + token;
+            }
+            return headers;
+        }
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function normalizeQuestionType(questionType) {
+            const raw = String(questionType || '').trim().toLowerCase();
+            if (!raw) return '单选题';
+            if (raw === '1' || raw === 'single' || raw.includes('单选')) return '单选题';
+            if (raw === '2' || raw === 'multiple' || raw.includes('多选')) return '多选题';
+            if (raw === '3' || raw === 'judge' || raw === 'judgment' || raw.includes('判断')) return '判断题';
+            if (raw === '4' || raw === 'text' || raw.includes('简答')) return '简答题';
+            if (raw === 'fill' || raw.includes('填空')) return '填空题';
+            return String(questionType || '').trim();
+        }
+
+        function normalizeAnswerLetters(answer) {
+            const raw = String(answer == null ? '' : answer).trim().toUpperCase();
+            if (!raw) return [];
+            const letters = raw.match(/[A-D]/g);
+            if (letters && letters.length) {
+                return Array.from(new Set(letters)).sort();
+            }
+            const digits = raw.match(/\d/g);
+            if (!digits || !digits.length) return [];
+            const hasZeroBasedValue = digits.includes('0');
+            return Array.from(new Set(digits.map(Number).map(index => {
+                if (hasZeroBasedValue && index >= 0 && index <= 3) {
+                    return String.fromCharCode(65 + index);
+                }
+                if (!hasZeroBasedValue && index >= 1 && index <= 4) {
+                    return String.fromCharCode(64 + index);
+                }
+                return '';
+            }).filter(Boolean))).sort();
+        }
+
+        function parseCorrectAnswer(answer, questionType) {
+            const normalizedType = normalizeQuestionType(questionType);
+            const raw = String(answer == null ? '' : answer).trim();
+            if (!raw) return '';
+            if (normalizedType === '多选题') {
+                return normalizeAnswerLetters(raw).join('');
+            }
+            if (normalizedType === '判断题') {
+                if (['正确', '对', 'true', 'a', '1'].includes(raw.toLowerCase())) return 'A';
+                if (['错误', '错', 'false', 'b', '0'].includes(raw.toLowerCase())) return 'B';
+            }
+            if (/^[A-D]$/i.test(raw)) {
+                return raw.toUpperCase();
+            }
+            if (/^\d+$/.test(raw)) {
+                const index = Number(raw);
+                if (index >= 0 && index <= 3) {
+                    return String.fromCharCode(65 + index);
+                }
+            }
+            return raw;
+        }
+
+        function buildQuestionOptions(question) {
+            const normalizedType = normalizeQuestionType(question.questionType);
+            if (normalizedType === '判断题') {
+                return [
+                    { label: 'A', value: '正确' },
+                    { label: 'B', value: '错误' }
+                ];
+            }
+
+            const options = [];
+            [question.optionA, question.optionB, question.optionC, question.optionD].forEach((item, index) => {
+                if (item !== undefined && item !== null && String(item).trim()) {
+                    options.push({
+                        label: String.fromCharCode(65 + index),
+                        value: String(item).trim()
+                    });
+                }
+            });
+            return options;
+        }
+
+        function normalizeCourseQuestion(rawQuestion, questionSource, categoryName) {
+            const questionType = normalizeQuestionType(rawQuestion.questionType || rawQuestion.type);
+            const normalized = {
+                id: rawQuestion.id || rawQuestion.questionId,
+                questionId: rawQuestion.id || rawQuestion.questionId,
+                questionText: rawQuestion.questionText || rawQuestion.content || rawQuestion.title || '',
+                questionType,
+                optionA: rawQuestion.optionA || '',
+                optionB: rawQuestion.optionB || '',
+                optionC: rawQuestion.optionC || '',
+                optionD: rawQuestion.optionD || '',
+                correctAnswer: parseCorrectAnswer(rawQuestion.correctAnswer || rawQuestion.answer, questionType),
+                explanation: rawQuestion.explanation || rawQuestion.analysis || '',
+                questionSource,
+                moduleName: rawQuestion.category || categoryName || '',
+                userAnswer: '',
+                isCorrect: false
+            };
+            normalized.options = buildQuestionOptions(normalized);
+            return normalized;
+        }
+
+        function extractQuestionItems(responseBody) {
+            if (Array.isArray(responseBody)) return responseBody;
+            if (Array.isArray(responseBody?.data)) return responseBody.data;
+            if (Array.isArray(responseBody?.rows)) return responseBody.rows;
+            if (Array.isArray(responseBody?.data?.rows)) return responseBody.data.rows;
+            return [];
+        }
+
+        function isSupportedCourseQuestion(question) {
+            const questionType = normalizeQuestionType(question && question.questionType);
+            if (!['单选题', '多选题', '判断题'].includes(questionType)) {
+                return false;
+            }
+            return !!(question && question.questionText && question.correctAnswer && question.options && question.options.length > 0);
+        }
+
+        function shuffleQuestions(questions) {
+            const shuffled = Array.isArray(questions) ? [...questions] : [];
+            for (let index = shuffled.length - 1; index > 0; index -= 1) {
+                const swapIndex = Math.floor(Math.random() * (index + 1));
+                [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+            }
+            return shuffled;
+        }
+
+        async function requestCourseQuestions(data) {
+            const baseURL = window.__BACKEND_BASE__ || '/';
+            const headers = getAuthHeaders();
+            const questionSource = inferQuestionSource(data);
+            const categoryCandidates = collectQuestionCategoryCandidates(data);
+            const categoryName = categoryCandidates[0] || '';
+            const limit = DEFAULT_COURSE_QUIZ_LIMIT;
+
+            if (questionSource === 'dept') {
+                const courseQuizUrl = new URL(baseURL + 'train/dept-question/course-quiz', window.location.origin);
+                const deptType = String((data && (data.deptType || data.category)) || '').trim();
+                const courseName = String((data && data.title) || '').trim();
+                const courseId = data && data.id !== undefined && data.id !== null ? String(data.id).trim() : '';
+                if (courseId) {
+                    courseQuizUrl.searchParams.set('courseId', courseId);
+                }
+                if (courseName) {
+                    courseQuizUrl.searchParams.set('courseName', courseName);
+                }
+                if (deptType) {
+                    courseQuizUrl.searchParams.set('deptType', deptType);
+                }
+                if (categoryName) {
+                    courseQuizUrl.searchParams.set('category', categoryName);
+                }
+                courseQuizUrl.searchParams.set('limit', String(limit));
+                courseQuizUrl.searchParams.set('scope', 'self');
+                courseQuizUrl.searchParams.set('_t', String(Date.now()));
+                const courseQuizRes = await fetch(courseQuizUrl.toString(), { headers }).then(r => r.json());
+                const classifiedQuestions = extractQuestionItems(courseQuizRes).map(item => normalizeCourseQuestion(item, questionSource, categoryName || courseName));
+                if (classifiedQuestions.length) {
+                    return classifiedQuestions;
+                }
+
+                const url = new URL(baseURL + 'train/dept-question/daily', window.location.origin);
+                if (deptType) {
+                    url.searchParams.set('deptType', deptType);
+                }
+                url.searchParams.set('limit', String(limit));
+                url.searchParams.set('scope', 'self');
+                const deptFallbackCategories = categoryCandidates.length ? [...categoryCandidates, ''] : [''];
+                for (const candidateCategory of deptFallbackCategories) {
+                    if (candidateCategory) {
+                        url.searchParams.set('category', candidateCategory);
+                    } else {
+                        url.searchParams.delete('category');
+                    }
+                    url.searchParams.set('_t', String(Date.now()));
+                    const res = await fetch(url.toString(), { headers }).then(r => r.json());
+                    const dailyQuestions = extractQuestionItems(res).map(item => normalizeCourseQuestion(item, questionSource, candidateCategory || categoryName));
+                    if (dailyQuestions.length) {
+                        return dailyQuestions;
+                    }
+                }
+                return [];
+            }
+
+            if (questionSource === 'green_hotel') {
+                const courseId = data && data.id !== undefined && data.id !== null ? String(data.id).trim() : '';
+                for (const candidateCategory of categoryCandidates.length ? categoryCandidates : ['']) {
+                    const url = new URL(baseURL + 'train/green-hotel-question/user/list', window.location.origin);
+                    if (courseId) {
+                        url.searchParams.set('courseId', courseId);
+                    }
+                    if (candidateCategory) {
+                        url.searchParams.set('category', candidateCategory);
+                    }
+                    const res = await fetch(url.toString(), { headers }).then(r => r.json());
+                    const hotelQuestions = extractQuestionItems(res).map(item => normalizeCourseQuestion(item, questionSource, candidateCategory || categoryName));
+                    if (hotelQuestions.length) {
+                        return hotelQuestions;
+                    }
+                }
+                return [];
+            }
+
+            if (questionSource === 'culture') {
+                for (const candidateCategory of categoryCandidates) {
+                    const url = new URL(baseURL + 'train/culture-question/user/list', window.location.origin);
+                    url.searchParams.set('category', candidateCategory);
+                    const res = await fetch(url.toString(), { headers }).then(r => r.json());
+                    const cultureQuestions = extractQuestionItems(res).map(item => normalizeCourseQuestion(item, questionSource, candidateCategory));
+                    if (cultureQuestions.length) {
+                        return cultureQuestions;
+                    }
+                }
+                return [];
+            }
+
+            const genericCourseId = data && data.id !== undefined && data.id !== null ? data.id : null;
+            if (!genericCourseId && !categoryCandidates.length) {
+                return [];
+            }
+            const genericFallbackCategories = categoryCandidates.length ? [...categoryCandidates, ''] : [''];
+            for (const candidateCategory of genericFallbackCategories) {
+                const res = await fetch(baseURL + 'train/exercises/generate-paper', {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify({
+                        courseId: genericCourseId,
+                        category: candidateCategory,
+                        limit
+                    })
+                }).then(r => r.json());
+                const generatedQuestions = extractQuestionItems(res).map(item => normalizeCourseQuestion(item, questionSource, candidateCategory));
+                if (generatedQuestions.length) {
+                    return generatedQuestions;
+                }
+            }
+            return [];
+        }
+
+        async function loadQuestions() {
+            try {
+                if (!courseData) {
+                    return;
+                }
+                const requestedQuestions = await requestCourseQuestions(courseData);
+                courseQuestions = shuffleQuestions(requestedQuestions.filter(isSupportedCourseQuestion))
+                    .slice(0, DEFAULT_COURSE_QUIZ_LIMIT);
+                console.log('📝 结课测验题目加载完成:', courseQuestions.length, '题，默认目标题量:', DEFAULT_COURSE_QUIZ_LIMIT);
+                if (courseQuestions.length > 0 && courseQuestions.length < DEFAULT_COURSE_QUIZ_LIMIT) {
+                    console.log('📝 当前题库不足默认题量，已按现有题数出题:', courseQuestions.length);
+                }
+                if (courseQuizStartPending) {
+                    startCourseQuizWhenReady();
+                }
+                if (hasCompletedCourseContent()) {
+                    startCourseQuizWhenReady();
+                }
+            } catch (e) {
+                courseQuestions = [];
+                console.error('加载结课测验题目失败:', e);
+            }
+        }
+
+        function checkQuestions() {
+            if (courseQuizStarted || courseQuizFinished) {
+                return;
+            }
+            if (hasCompletedCourseContent()) {
+                startCourseQuizWhenReady();
+            }
+        }
+
+        function startCourseQuizWhenReady() {
+            if (courseQuizStarted || courseQuizFinished) {
+                return;
+            }
+            if (!courseQuestions.length) {
+                courseQuizStartPending = true;
+                return;
+            }
+            courseQuizStartPending = false;
+            startCourseQuiz();
+        }
+
+        function resetQuizActionButtons() {
+            document.getElementById('quizSubmitBtn').classList.remove('hidden');
+            document.getElementById('quizContinueBtn').classList.add('hidden');
+            document.getElementById('quizViewRecordBtn').classList.add('hidden');
+            document.getElementById('quizCloseBtn').classList.add('hidden');
+        }
+
+        function showQuizModal(question) {
+            const videoPlayer = document.getElementById('courseVideo');
+            if (videoPlayer && !videoPlayer.paused) {
+                videoPlayer.pause();
+            }
+
+            if (document.fullscreenElement) {
+                document.exitFullscreen().catch(err => console.log(err));
+            }
+
+            currentQuestion = question;
+            document.getElementById('quizModal').classList.remove('hidden');
+            document.getElementById('quizContent').textContent = question.questionText;
+            document.getElementById('quizIndex').textContent = currentQuizIndex + 1;
+            document.getElementById('quizSummary').classList.add('hidden');
+
+            const optionsContainer = document.getElementById('quizOptions');
+            optionsContainer.innerHTML = '';
+
+            (question.options || []).forEach(opt => {
+                const btn = document.createElement('div');
+                btn.className = 'quiz-option flex items-center gap-3 p-3 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50 hover:border-indigo-200 transition-all';
+                btn.innerHTML = `
+                    <div class="w-6 h-6 rounded-full border-2 border-slate-300 flex items-center justify-center text-xs font-bold text-slate-400 option-radio">${opt.label}</div>
+                    <span class="text-slate-600 font-medium">${escapeHtml(opt.value)}</span>
+                `;
+                btn.onclick = () => selectOption(btn, opt.label);
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById('quizFeedback').classList.add('hidden');
+            resetQuizActionButtons();
+            document.getElementById('quizSubmitBtn').disabled = true;
+            document.getElementById('quizSubmitBtn').classList.add('opacity-50', 'cursor-not-allowed');
+
+            selectedOptionValue = isMultipleChoiceQuestion(question) ? [] : null;
+        }
+
+        function startCourseQuiz() {
+            if (!courseQuestions.length || courseQuizStarted) {
+                return;
+            }
+            courseQuizStartPending = false;
+            courseQuizStarted = true;
+            courseQuizFinished = false;
+            quizAttemptId = null;
+            quizStartTime = Date.now();
+            currentQuizIndex = 0;
+            quizResults = courseQuestions.map(question => ({
+                ...question,
+                userAnswer: '',
+                isCorrect: false
+            }));
+            showQuizModal(quizResults[currentQuizIndex]);
+        }
+
+        function isMultipleChoiceQuestion(question) {
+            return normalizeQuestionType(question && question.questionType) === '多选题';
+        }
+
+        function normalizeSelectedAnswer(answer) {
+            if (Array.isArray(answer)) {
+                return Array.from(new Set(answer.map(item => String(item || '').trim().toUpperCase()).filter(Boolean))).sort().join('');
+            }
+            return String(answer || '').trim().toUpperCase();
+        }
+
+        function hasSelectedQuizAnswer(answer) {
+            return Array.isArray(answer) ? answer.length > 0 : !!answer;
+        }
+
+        function isAnswerCorrect(question, selectedLabel) {
+            const correctAnswer = normalizeAnswerLetters(question && question.correctAnswer).join('') || normalizeSelectedAnswer(question && question.correctAnswer);
+            return correctAnswer === normalizeSelectedAnswer(selectedLabel);
+        }
+
+        function getQuizScoreSummary() {
+            const total = quizResults.length;
+            const correct = quizResults.filter(item => item.isCorrect).length;
+            const score = total > 0 ? Math.round((correct / total) * 100) : 0;
+            const durationSeconds = Math.max(1, Math.round((Date.now() - (quizStartTime || Date.now())) / 1000));
+            return { total, correct, score, durationSeconds };
+        }
+
+        function formatDateTime(date) {
+            const pad = (value) => String(value).padStart(2, '0');
+            const target = date instanceof Date ? date : new Date(date);
+            return `${target.getFullYear()}-${pad(target.getMonth() + 1)}-${pad(target.getDate())} ${pad(target.getHours())}:${pad(target.getMinutes())}:${pad(target.getSeconds())}`;
+        }
+
+        async function persistQuizAttempt() {
+            const baseURL = window.__BACKEND_BASE__ || '/';
+            const headers = getAuthHeaders();
+            const summary = getQuizScoreSummary();
+            const examName = `${(courseData && courseData.title) || '课程'}结课测验`;
+            const courseQuizKey = buildCourseQuizKey(courseData || {});
+
+            const submitRes = await fetch(baseURL + 'train/quiz', {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({
+                    examId: 0,
+                    examName,
+                    attemptScene: 'course_quiz',
+                    courseQuizKey,
+                    score: summary.score,
+                    isPassed: summary.score >= 60 ? 1 : 0,
+                    durationSeconds: summary.durationSeconds,
+                    questionCount: summary.total,
+                    correctCount: summary.correct,
+                    submittedAt: formatDateTime(new Date()),
+                    attemptType: 'practice'
+                })
+            }).then(r => r.json());
+
+            if (submitRes.code !== 200 || !submitRes.attemptId) {
+                throw new Error(submitRes.msg || '考试记录保存失败');
+            }
+
+            quizAttemptId = submitRes.attemptId;
+
+            const detailPayload = quizResults.map(item => ({
+                questionId: item.questionId,
+                questionText: item.questionText,
+                questionType: item.questionType,
+                questionSource: item.questionSource,
+                userAnswer: item.userAnswer,
+                correctAnswer: item.correctAnswer,
+                explanation: item.explanation,
+                optionA: item.optionA,
+                optionB: item.optionB,
+                optionC: item.optionC,
+                optionD: item.optionD,
+                isCorrect: item.isCorrect
+            }));
+
+            const detailRes = await fetch(baseURL + 'train/quiz/save-questions', {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({
+                    quizAttemptId,
+                    questions: detailPayload
+                })
+            }).then(r => r.json());
+
+            if (detailRes.code !== 200) {
+                throw new Error(detailRes.msg || '考试题目详情保存失败');
+            }
+        }
+
+        async function finishCourseQuiz() {
+            courseQuizFinished = true;
+            const summary = getQuizScoreSummary();
+            const feedback = document.getElementById('quizFeedback');
+
+            document.getElementById('quizOptions').innerHTML = '';
+            document.getElementById('quizContent').textContent = '视频学习已完成，测验结果如下。';
+            document.getElementById('quizIndex').textContent = summary.total;
+            document.getElementById('quizSummaryTitle').textContent = `成绩 ${summary.score} 分`;
+            document.getElementById('quizSummaryStats').innerHTML = `
+                <div>答对 <strong class="text-emerald-700">${summary.correct}</strong> / ${summary.total} 题</div>
+                <div>用时 <strong class="text-slate-800">${summary.durationSeconds}</strong> 秒</div>
+                <div>完成时间 <strong class="text-slate-800">${formatDateTime(new Date())}</strong></div>
+            `;
+            document.getElementById('quizSummary').classList.remove('hidden');
+            feedback.classList.add('hidden');
+            document.getElementById('quizSubmitBtn').classList.add('hidden');
+            document.getElementById('quizContinueBtn').classList.add('hidden');
+            document.getElementById('quizCloseBtn').classList.remove('hidden');
+
+            try {
+                await persistQuizAttempt();
+                document.getElementById('quizViewRecordBtn').classList.remove('hidden');
+            } catch (error) {
+                console.error('保存结课测验记录失败:', error);
+                feedback.className = 'mb-6 p-4 rounded-xl text-sm bg-amber-50 text-amber-700 border border-amber-100';
+                feedback.innerHTML = `<div class="font-bold flex items-center gap-2 mb-1"><i class="fa-solid fa-triangle-exclamation"></i> 记录保存失败</div><div>${escapeHtml(error.message || '请稍后重试')}</div>`;
+                feedback.classList.remove('hidden');
+            }
+        }
+
+        function setQuizOptionSelected(btn, selected) {
+            btn.classList.toggle('bg-indigo-50', selected);
+            btn.classList.toggle('border-indigo-500', selected);
+            btn.classList.toggle('ring-2', selected);
+            btn.classList.toggle('ring-indigo-100', selected);
+            const radio = btn.querySelector('.option-radio');
+            radio.classList.toggle('border-indigo-500', selected);
+            radio.classList.toggle('text-indigo-600', selected);
+            radio.classList.toggle('bg-indigo-100', selected);
+        }
+
+        function selectOption(btn, value) {
+            if (isMultipleChoiceQuestion(currentQuestion)) {
+                const currentSelection = Array.isArray(selectedOptionValue) ? selectedOptionValue : [];
+                if (currentSelection.includes(value)) {
+                    selectedOptionValue = currentSelection.filter(item => item !== value);
+                    setQuizOptionSelected(btn, false);
+                } else {
+                    selectedOptionValue = [...currentSelection, value];
+                    setQuizOptionSelected(btn, true);
+                }
+            } else {
+                document.querySelectorAll('.quiz-option').forEach(el => setQuizOptionSelected(el, false));
+                selectedOptionValue = value;
+                setQuizOptionSelected(btn, true);
+            }
+
+            const submitBtn = document.getElementById('quizSubmitBtn');
+            const hasAnswer = hasSelectedQuizAnswer(selectedOptionValue);
+            submitBtn.disabled = !hasAnswer;
+            submitBtn.classList.toggle('opacity-50', !hasAnswer);
+            submitBtn.classList.toggle('cursor-not-allowed', !hasAnswer);
+        }
+
+        document.getElementById('quizSubmitBtn').onclick = async () => {
+            if (!currentQuestion || !hasSelectedQuizAnswer(selectedOptionValue)) return;
+
+            const submitBtn = document.getElementById('quizSubmitBtn');
+            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> 提交中...';
+
+            try {
+                const isCorrect = isAnswerCorrect(currentQuestion, selectedOptionValue);
+                quizResults[currentQuizIndex].userAnswer = normalizeSelectedAnswer(selectedOptionValue);
+                quizResults[currentQuizIndex].isCorrect = isCorrect;
+
+                const feedback = document.getElementById('quizFeedback');
+                feedback.classList.remove('hidden');
+
+                if (isCorrect) {
+                    feedback.className = 'mb-6 p-4 rounded-xl text-sm bg-green-50 text-green-700 border border-green-100';
+                    feedback.innerHTML = '<div class="font-bold flex items-center gap-2"><i class="fa-solid fa-check-circle text-lg"></i> 回答正确！</div>';
+                } else {
+                    const explanationHtml = currentQuestion.explanation
+                        ? `<br>${escapeHtml(currentQuestion.explanation)}`
+                        : '';
+                    feedback.className = 'mb-6 p-4 rounded-xl text-sm bg-red-50 text-red-700 border border-red-100';
+                    feedback.innerHTML = `
+                        <div class="font-bold flex items-center gap-2 mb-2"><i class="fa-solid fa-circle-xmark text-lg"></i> 回答错误</div>
+                        <div class="opacity-90">正确答案是 <strong>${escapeHtml(currentQuestion.correctAnswer)}</strong>${explanationHtml}</div>
+                    `;
+                }
+
+                submitBtn.classList.add('hidden');
+                document.getElementById('quizContinueBtn').classList.remove('hidden');
+            } catch (e) {
+                console.error(e);
+                alert('提交失败，请重试');
+            } finally {
+                submitBtn.innerHTML = '提交答案';
+            }
+        };
+
+        document.getElementById('quizContinueBtn').onclick = () => {
+            currentQuizIndex += 1;
+            if (currentQuizIndex >= quizResults.length) {
+                finishCourseQuiz();
+                return;
+            }
+            showQuizModal(quizResults[currentQuizIndex]);
+        };
+
+        document.getElementById('quizViewRecordBtn').onclick = () => {
+            if (!quizAttemptId) return;
+            window.open(`/online-exam/review/${quizAttemptId}`, '_blank');
+        };
+
+        document.getElementById('quizCloseBtn').onclick = () => {
+            document.getElementById('quizModal').classList.add('hidden');
+        };
+    </script>
+</body>
+</html>

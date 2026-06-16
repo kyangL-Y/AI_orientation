@@ -1,0 +1,159 @@
+{
+  "time": "2026-02-22T15:42:11",
+  "base_url": "http://127.0.0.1:9090",
+  "api_prefix": "",
+  "target_username": "孙琳",
+  "target_user_id": 114,
+  "role_id": 100,
+  "expected_perm": "train:deptCourse:list",
+  "overall_passed": true,
+  "fatal_error": "",
+  "steps": [
+    {
+      "name": "reset_target_user_password",
+      "expected": "reset user password API succeeds",
+      "passed": true,
+      "actual": "http=200, code=200, msg=操作成功",
+      "evidence": {
+        "resetPwd": {
+          "method": "PUT",
+          "path": "/system/user/resetPwd",
+          "http_status": 200,
+          "json_code": 200,
+          "json_msg": "操作成功",
+          "error": ""
+        }
+      }
+    },
+    {
+      "name": "before_grant_denied",
+      "expected": "before grant, target user request is denied",
+      "passed": true,
+      "actual": "http=200, code=403, msg=没有权限，请联系管理员授权",
+      "evidence": {
+        "probe": {
+          "method": "GET",
+          "path": "/train/dept-course/list?pageNum=1&pageSize=1",
+          "http_status": 200,
+          "json_code": 403,
+          "json_msg": "没有权限，请联系管理员授权",
+          "error": ""
+        }
+      }
+    },
+    {
+      "name": "grant_role",
+      "expected": "grant role API succeeds",
+      "passed": true,
+      "actual": "http=200, code=200, msg=操作成功",
+      "evidence": {
+        "grant": {
+          "method": "PUT",
+          "path": "/system/role/authUser/selectAll?roleId=100&userIds=114",
+          "http_status": 200,
+          "json_code": 200,
+          "json_msg": "操作成功",
+          "error": ""
+        }
+      }
+    },
+    {
+      "name": "old_token_denied_after_grant",
+      "expected": "after grant, old token is invalid/denied",
+      "passed": true,
+      "actual": "http=200, code=401, msg=请求访问：/train/dept-course/list，认证失败，无法访问系统资源",
+      "evidence": {
+        "probe_old_after_grant": {
+          "method": "GET",
+          "path": "/train/dept-course/list?pageNum=1&pageSize=1",
+          "http_status": 200,
+          "json_code": 401,
+          "json_msg": "请求访问：/train/dept-course/list，认证失败，无法访问系统资源",
+          "error": ""
+        }
+      }
+    },
+    {
+      "name": "relogin_effective_after_grant",
+      "expected": "after re-login, access restored and expected permission exists",
+      "passed": true,
+      "actual": "probe(http=200, code=200, denied=False), perm_exists=True",
+      "evidence": {
+        "probe_after_grant": {
+          "method": "GET",
+          "path": "/train/dept-course/list?pageNum=1&pageSize=1",
+          "http_status": 200,
+          "json_code": 200,
+          "json_msg": "查询成功",
+          "error": ""
+        },
+        "getinfo_after_grant": {
+          "method": "GET",
+          "path": "/getInfo",
+          "http_status": 200,
+          "json_code": 200,
+          "json_msg": "操作成功",
+          "error": ""
+        },
+        "permissions_after_grant_count": 77
+      }
+    },
+    {
+      "name": "revoke_role",
+      "expected": "revoke role API succeeds",
+      "passed": true,
+      "actual": "http=200, code=200, msg=操作成功",
+      "evidence": {
+        "revoke": {
+          "method": "PUT",
+          "path": "/system/role/authUser/cancelAll?roleId=100&userIds=114",
+          "http_status": 200,
+          "json_code": 200,
+          "json_msg": "操作成功",
+          "error": ""
+        }
+      }
+    },
+    {
+      "name": "old_token_denied_after_revoke",
+      "expected": "after revoke, old token is invalid/denied",
+      "passed": true,
+      "actual": "http=200, code=401, msg=请求访问：/train/dept-course/list，认证失败，无法访问系统资源",
+      "evidence": {
+        "probe_old_after_revoke": {
+          "method": "GET",
+          "path": "/train/dept-course/list?pageNum=1&pageSize=1",
+          "http_status": 200,
+          "json_code": 401,
+          "json_msg": "请求访问：/train/dept-course/list，认证失败，无法访问系统资源",
+          "error": ""
+        }
+      }
+    },
+    {
+      "name": "relogin_denied_after_revoke",
+      "expected": "after re-login post-revoke, access denied and expected permission removed",
+      "passed": true,
+      "actual": "probe(http=200, code=403, denied=True), perm_removed=True",
+      "evidence": {
+        "probe_after_revoke": {
+          "method": "GET",
+          "path": "/train/dept-course/list?pageNum=1&pageSize=1",
+          "http_status": 200,
+          "json_code": 403,
+          "json_msg": "没有权限，请联系管理员授权",
+          "error": ""
+        },
+        "getinfo_after_revoke": {
+          "method": "GET",
+          "path": "/getInfo",
+          "http_status": 200,
+          "json_code": 200,
+          "json_msg": "操作成功",
+          "error": ""
+        },
+        "permissions_after_revoke_count": 0
+      }
+    }
+  ]
+}

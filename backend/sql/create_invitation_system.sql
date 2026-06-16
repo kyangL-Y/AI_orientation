@@ -1,0 +1,72 @@
+-- 邀请注册 / 邀请加入体系首期表结构
+
+CREATE TABLE IF NOT EXISTS `sys_invitation` (
+  `invite_id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `invite_code` varchar(16) NOT NULL COMMENT '展示邀请码',
+  `invite_token_hash` varchar(128) NOT NULL COMMENT '邀请链接token哈希',
+  `invite_mode` varchar(32) NOT NULL DEFAULT 'register_or_join' COMMENT 'register_only/join_only/register_or_join',
+  `tenant_id` varchar(20) NOT NULL COMMENT '目标租户',
+  `dept_id` bigint DEFAULT NULL COMMENT '目标部门',
+  `post_ids_text` varchar(1000) DEFAULT NULL COMMENT '岗位集合文本',
+  `relation_type` varchar(32) NOT NULL DEFAULT 'member' COMMENT '成员关系类型',
+  `inviter_user_id` bigint NOT NULL COMMENT '邀请人用户ID',
+  `max_uses` int NOT NULL DEFAULT 1 COMMENT '最大使用次数',
+  `used_count` int NOT NULL DEFAULT 0 COMMENT '已使用次数',
+  `expire_at` datetime NOT NULL COMMENT '过期时间',
+  `status` varchar(16) NOT NULL DEFAULT 'active' COMMENT 'active/disabled/expired/exhausted/cancelled',
+  `allow_existing_user` char(1) NOT NULL DEFAULT '1' COMMENT '是否允许已注册用户接受',
+  `allow_new_user` char(1) NOT NULL DEFAULT '1' COMMENT '是否允许新用户注册',
+  `require_mobile_verify` char(1) NOT NULL DEFAULT '0' COMMENT '是否强制短信验证',
+  `require_email_verify` char(1) NOT NULL DEFAULT '0' COMMENT '是否强制邮箱验证',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`invite_id`),
+  UNIQUE KEY `uk_invite_code` (`invite_code`),
+  UNIQUE KEY `uk_invite_token_hash` (`invite_token_hash`),
+  KEY `idx_invite_tenant_status` (`tenant_id`,`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='邀请中心主表';
+
+CREATE TABLE IF NOT EXISTS `sys_invitation_record` (
+  `record_id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `invite_id` bigint NOT NULL COMMENT '邀请ID',
+  `invite_code_snapshot` varchar(16) NOT NULL COMMENT '邀请码快照',
+  `accept_mode` varchar(32) NOT NULL COMMENT 'register/join',
+  `user_id` bigint DEFAULT NULL COMMENT '接受人用户ID',
+  `login_identifier` varchar(128) DEFAULT NULL COMMENT '手机号/邮箱快照',
+  `tenant_id` varchar(20) NOT NULL COMMENT '租户快照',
+  `dept_id` bigint DEFAULT NULL COMMENT '部门快照',
+  `relation_id` bigint DEFAULT NULL COMMENT '关系ID',
+  `status` varchar(16) NOT NULL DEFAULT 'accepted' COMMENT 'accepted/rejected/expired/risk_blocked',
+  `fail_reason` varchar(500) DEFAULT NULL COMMENT '失败原因',
+  `request_ip` varchar(64) DEFAULT NULL COMMENT '请求IP',
+  `device_fingerprint` varchar(128) DEFAULT NULL COMMENT '设备指纹',
+  `accepted_at` datetime DEFAULT NULL COMMENT '接受时间',
+  `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`record_id`),
+  KEY `idx_invite_record_invite` (`invite_id`),
+  KEY `idx_invite_record_user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='邀请接受记录表';
+
+CREATE TABLE IF NOT EXISTS `sys_user_tenant_rel` (
+  `rel_id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `user_id` bigint NOT NULL COMMENT '用户ID',
+  `tenant_id` varchar(20) NOT NULL COMMENT '租户ID',
+  `dept_id` bigint DEFAULT NULL COMMENT '租户内部门ID',
+  `post_ids_text` varchar(1000) DEFAULT NULL COMMENT '岗位集合文本',
+  `source` varchar(32) NOT NULL DEFAULT 'manual' COMMENT 'invite/manual/register',
+  `source_id` bigint DEFAULT NULL COMMENT '来源ID',
+  `is_default` char(1) NOT NULL DEFAULT '0' COMMENT '是否默认租户',
+  `status` varchar(16) NOT NULL DEFAULT 'active' COMMENT 'active/disabled/left',
+  `joined_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '加入时间',
+  `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`rel_id`),
+  UNIQUE KEY `uk_user_tenant_rel` (`user_id`,`tenant_id`),
+  KEY `idx_user_tenant_status` (`user_id`,`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户租户关系表';

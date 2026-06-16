@@ -1,0 +1,1 @@
+import{Y as r}from"./index-KjQIQL6T.js";function i(t){return r({url:"/train/points/list",method:"get",params:t})}function n(t){return r({url:"/train/points/add",method:"post",data:t})}function o(t){return r({url:"/train/points/log/list",method:"get",params:t})}export{o as a,n as b,i as l};

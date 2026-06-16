@@ -1,0 +1,60 @@
+{
+  "name": "blue-sky-training-user",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite --port 8084",
+    "serve": "vite --port 8084",
+    "build": "vite build",
+    "preview": "vite preview --port 8084",
+    "lint": "eslint --no-error-on-unmatched-pattern \"src/**/*.{js,vue}\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.2",
+    "@fortawesome/fontawesome-free": "^6.7.2",
+    "axios": "^1.10.0",
+    "chart.js": "^4.5.0",
+    "core-js": "^3.8.3",
+    "element-plus": "^2.8.8",
+    "html2canvas": "^1.4.1",
+    "js-md5": "^0.8.3",
+    "jspdf": "^3.0.3",
+    "mysql2": "^3.15.3",
+    "quill": "^2.0.3",
+    "vue": "^3.5.17",
+    "vue-router": "^4.5.1",
+    "whatwg-fetch": "^3.6.20"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.16",
+    "@babel/eslint-parser": "^7.12.16",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "vite": "^7.1.2",
+    "autoprefixer": "^10.4.21",
+    "eslint-plugin-vue": "^10.6.0",
+    "fast-check": "^4.5.2",
+    "postcss": "^8.5.6",
+    "sass": "^1.89.2",
+    "sass-loader": "^16.0.5",
+    "tailwindcss": "^3.4.17",
+    "@vitest/coverage-v8": "^4.0.16",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.4.3",
+    "vitest": "^4.0.18"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ],
+  "lint-staged": {
+    "src/**/*.{js,vue}": [
+      "node node_modules/eslint/bin/eslint.js --no-error-on-unmatched-pattern"
+    ]
+  }
+}

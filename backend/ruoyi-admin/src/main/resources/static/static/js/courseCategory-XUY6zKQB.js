@@ -1,0 +1,1 @@
+import{Y as t}from"./index-KjQIQL6T.js";function o(r){return t({url:"/train/course-category/list",method:"get",params:r})}function s(r,a){return t({url:"/train/course-category/list-platform",method:"get",params:{platform:r,...a}})}export{o as a,s as l};

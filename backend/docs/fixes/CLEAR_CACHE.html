@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>清除缓存工具</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #409eff;
+            padding-bottom: 10px;
+        }
+        .warning {
+            background: #fff7e6;
+            border-left: 4px solid #faad14;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .btn {
+            background: #409eff;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            background: #66b1ff;
+        }
+        .btn-danger {
+            background: #f56c6c;
+        }
+        .btn-danger:hover {
+            background: #f78989;
+        }
+        .success {
+            background: #f0f9ff;
+            border-left: 4px solid #67c23a;
+            padding: 15px;
+            margin: 20px 0;
+            display: none;
+        }
+        ul {
+            line-height: 2;
+        }
+        code {
+            background: #f4f4f5;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 清除浏览器缓存工具</h1>
+
+        <div class="warning">
+            <strong>⚠️ 为什么需要清除缓存？</strong>
+            <p>菜单数据可能被缓存在浏览器的 localStorage 和缓存文件中。如果不清除，您将看到旧的菜单结构（平铺的菜单、错误的路径等）。</p>
+        </div>
+
+        <h2>方法一：一键清除（推荐）</h2>
+        <button class="btn btn-danger" onclick="clearAll()">清除所有缓存数据</button>
+
+        <div class="success" id="successMsg">
+            <strong>✅ 清除成功！</strong>
+            <p>请刷新页面（F5）或重新登录以加载最新数据。</p>
+        </div>
+
+        <h2>方法二：手动清除</h2>
+        <p>如果一键清除无效，请按以下步骤操作：</p>
+        <ol>
+            <li>按 <code>Ctrl + Shift + Delete</code> 打开清除浏览数据对话框</li>
+            <li>勾选以下选项：
+                <ul>
+                    <li>✅ Cookie 和其他网站数据</li>
+                    <li>✅ 缓存的图片和文件</li>
+                    <li>✅ 本地存储（localStorage）</li>
+                </ul>
+            </li>
+            <li>时间范围选择：<strong>全部</strong></li>
+            <li>点击"清除数据"按钮</li>
+            <li>刷新页面（F5）</li>
+        </ol>
+
+        <h2>方法三：强制刷新</h2>
+        <ol>
+            <li>按住 <code>Shift</code> 键</li>
+            <li>点击浏览器的刷新按钮</li>
+            <li>或者按 <code>Ctrl + F5</code></li>
+        </ol>
+
+        <h2>验证是否清除成功</h2>
+        <p>按 <code>F12</code> 打开开发者工具，切换到 <strong>Console</strong> 标签，输入：</p>
+        <pre><code>localStorage.clear();
+sessionStorage.clear();
+console.log('缓存已清除');</code></pre>
+        <p>然后刷新页面。</p>
+
+        <hr style="margin: 30px 0;">
+
+        <h2>当前存储信息</h2>
+        <div id="storageInfo"></div>
+        <button class="btn" onclick="showStorageInfo()">查看存储数据</button>
+    </div>
+
+    <script>
+        function clearAll() {
+            try {
+                // 清除 localStorage
+                localStorage.clear();
+
+                // 清除 sessionStorage
+                sessionStorage.clear();
+
+                // 清除 cookies（当前域名）
+                document.cookie.split(";").forEach(function(c) {
+                    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+                });
+
+                // 显示成功消息
+                document.getElementById('successMsg').style.display = 'block';
+
+                // 3秒后刷新页面
+                setTimeout(function() {
+                    location.reload();
+                }, 3000);
+
+            } catch (e) {
+                alert('清除失败：' + e.message);
+            }
+        }
+
+        function showStorageInfo() {
+            const info = document.getElementById('storageInfo');
+            let html = '<h3>localStorage 数据：</h3><ul>';
+
+            if (localStorage.length === 0) {
+                html += '<li>（空）</li>';
+            } else {
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    html += `<li><code>${key}</code></li>`;
+                }
+            }
+
+            html += '</ul><h3>sessionStorage 数据：</h3><ul>';
+
+            if (sessionStorage.length === 0) {
+                html += '<li>（空）</li>';
+            } else {
+                for (let i = 0; i < sessionStorage.length; i++) {
+                    const key = sessionStorage.key(i);
+                    html += `<li><code>${key}</code></li>`;
+                }
+            }
+
+            html += '</ul>';
+            info.innerHTML = html;
+        }
+
+        // 页面加载时显示存储信息
+        window.onload = function() {
+            showStorageInfo();
+        };
+    </script>
+</body>
+</html>

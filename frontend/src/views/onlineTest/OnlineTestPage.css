@@ -1,0 +1,634 @@
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 20px;
+  }
+  .slide-fade-enter-active {
+    transition: all 0.3s ease-out;
+  }
+  .slide-fade-enter-from,
+  .slide-fade-leave-to {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  /* 折叠动画 */
+  .collapse-enter-active,
+  .collapse-leave-active {
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+  .collapse-enter-from,
+  .collapse-leave-to {
+    opacity: 0;
+    max-height: 0;
+  }
+  .collapse-enter-to,
+  .collapse-leave-from {
+    opacity: 1;
+    max-height: 500px;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+     display: none;
+  }
+  .no-scrollbar {
+     -ms-overflow-style: none;
+     scrollbar-width: none;
+  }
+  
+  /* 移动端优化 - 全新布局 */
+  @media (max-width: 768px) {
+    .practice-summary-bar {
+      border-radius: 0.75rem !important;
+      padding: 0.45rem 0.55rem !important;
+      margin-bottom: 0.65rem !important;
+    }
+
+    .practice-mode-panel {
+      padding: 0.7rem 0.8rem !important;
+      border-radius: 0.9rem !important;
+    }
+
+    .practice-mode-actions {
+      gap: 0.5rem !important;
+    }
+
+    .practice-mode-toolbar {
+      width: auto;
+      justify-content: flex-start;
+      flex-wrap: nowrap;
+    }
+
+    .practice-mode-toolbar > div:first-child {
+      flex: 0 0 auto;
+      min-width: auto;
+    }
+
+    .practice-record-btn {
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+
+    .practice-mode-panel > div:first-child h2 {
+      font-size: 0.95rem !important;
+      line-height: 1.2 !important;
+      margin-bottom: 0.2rem !important;
+    }
+
+    .practice-mode-panel > div:first-child p {
+      font-size: 0.68rem !important;
+      line-height: 1.3 !important;
+      max-width: 15rem;
+    }
+
+    .practice-mode-actions > div:first-child {
+      border-radius: 0.85rem !important;
+    }
+
+    .practice-mode-actions > p {
+      margin-top: -0.1rem !important;
+    }
+
+    .practice-mode-actions button {
+      min-height: 0 !important;
+      line-height: 1.1 !important;
+    }
+
+    /* 隐藏PC端侧边栏 */
+    aside.lg\:col-span-3 {
+      display: none !important;
+    }
+    
+    /* 答题区域占满全宽 */
+    .lg\:col-span-6 {
+      grid-column: span 12 !important;
+    }
+    
+    /* 顶部统计条 - 紧凑布局 */
+    .mb-6.bg-white.rounded-2xl {
+      border-radius: 0.75rem !important;
+      padding: 0.5rem !important;
+      margin-bottom: 0.75rem !important;
+    }
+    
+    .mb-6.bg-white.rounded-2xl .flex.items-center.gap-6 {
+      gap: 0.5rem !important;
+      flex-wrap: nowrap !important;
+      overflow-x: auto !important;
+    }
+    
+    .mb-6.bg-white.rounded-2xl .flex.items-center.gap-3 {
+      gap: 0.5rem !important;
+      padding: 0 0.25rem !important;
+    }
+    
+    .mb-6.bg-white.rounded-2xl .w-10.h-10 {
+      width: 1.75rem !important;
+      height: 1.75rem !important;
+    }
+    
+    .mb-6.bg-white.rounded-2xl .w-10.h-10 svg {
+      width: 0.875rem !important;
+      height: 0.875rem !important;
+    }
+    
+    .mb-6.bg-white.rounded-2xl .text-xs {
+      font-size: 0.6rem !important;
+    }
+    
+    .mb-6.bg-white.rounded-2xl .text-sm {
+      font-size: 0.7rem !important;
+    }
+    
+    .mb-6.bg-white.rounded-2xl .text-xl {
+      font-size: 0.9rem !important;
+    }
+    
+    .mb-6.bg-white.rounded-2xl .w-px.h-8 {
+      height: 1.5rem !important;
+    }
+    
+    /* 模式标题栏 - 紧凑 */
+    .bg-white.rounded-2xl.shadow-sm.border.border-slate-100.p-5 {
+      padding: 0.75rem !important;
+      border-radius: 0.75rem !important;
+      margin-bottom: 0.75rem !important;
+    }
+    
+    .bg-white.rounded-2xl.shadow-sm.border.border-slate-100.p-5 h2 {
+      font-size: 0.95rem !important;
+      margin-bottom: 0.25rem !important;
+    }
+    
+    .bg-white.rounded-2xl.shadow-sm.border.border-slate-100.p-5 p {
+      font-size: 0.65rem !important;
+    }
+    
+    .bg-white.rounded-2xl.shadow-sm.border.border-slate-100.p-5 button {
+      padding: 0.4rem 0.75rem !important;
+      font-size: 0.7rem !important;
+    }
+    
+    .bg-white.rounded-2xl.shadow-sm.border.border-slate-100.p-5 button svg {
+      width: 0.875rem !important;
+      height: 0.875rem !important;
+    }
+    
+    /* 题目卡片 */
+    .bg-white.rounded-3xl.shadow-sm.border.border-slate-100 {
+      border-radius: 1rem !important;
+      min-height: auto !important;
+    }
+    
+    /* 题号和标签区域 */
+    .bg-white.rounded-3xl .px-8.py-6.border-b {
+      padding: 0.75rem 1rem !important;
+    }
+    
+    .bg-white.rounded-3xl .px-8.py-6.border-b .text-xl {
+      font-size: 0.95rem !important;
+    }
+    
+    .bg-white.rounded-3xl .px-8.py-6.border-b .text-xs {
+      font-size: 0.65rem !important;
+      padding: 0.15rem 0.4rem !important;
+    }
+    
+    .bg-white.rounded-3xl .px-8.py-6.border-b .w-8.h-8 {
+      width: 1.75rem !important;
+      height: 1.75rem !important;
+    }
+    
+    .bg-white.rounded-3xl .px-8.py-6.border-b .w-8.h-8 svg {
+      width: 1rem !important;
+      height: 1rem !important;
+    }
+    
+    /* 题目内容区域 */
+    .bg-white.rounded-3xl .px-8.py-6.flex-1 {
+      padding: 1rem !important;
+    }
+    
+    .bg-white.rounded-3xl .px-8.py-6.flex-1 h1 {
+      font-size: 1rem !important;
+      line-height: 1.5 !important;
+      margin-bottom: 1.25rem !important;
+    }
+    
+    /* 选项列表 */
+    .bg-white.rounded-3xl .space-y-4 {
+      gap: 0.65rem !important;
+    }
+    
+    .bg-white.rounded-3xl .space-y-4 > div {
+      padding: 0.65rem !important;
+      border-radius: 0.75rem !important;
+    }
+    
+    /* 选项标记 (A/B/C/D) */
+    .bg-white.rounded-3xl .space-y-4 .w-10.h-10 {
+      width: 1.75rem !important;
+      height: 1.75rem !important;
+      margin-right: 0.65rem !important;
+      font-size: 0.75rem !important;
+    }
+    
+    /* 选项文字 */
+    .bg-white.rounded-3xl .space-y-4 .text-base {
+      font-size: 0.85rem !important;
+      line-height: 1.4 !important;
+    }
+    
+    /* 选项右侧标签 */
+    .bg-white.rounded-3xl .space-y-4 .absolute.right-4 {
+      right: 0.5rem !important;
+    }
+    
+    .bg-white.rounded-3xl .space-y-4 .absolute.right-4 > div {
+      font-size: 0.6rem !important;
+      padding: 0.15rem 0.4rem !important;
+    }
+    
+    .bg-white.rounded-3xl .space-y-4 .absolute.right-4 svg {
+      width: 0.75rem !important;
+      height: 0.75rem !important;
+    }
+    
+    /* 解析区域 */
+    .bg-slate-50.rounded-2xl.p-6 {
+      padding: 0.85rem !important;
+      border-radius: 0.75rem !important;
+      margin-top: 1.25rem !important;
+    }
+    
+    .bg-slate-50.rounded-2xl.p-6 .flex.items-center.gap-3 {
+      gap: 0.5rem !important;
+      margin-bottom: 0.5rem !important;
+    }
+    
+    .bg-slate-50.rounded-2xl.p-6 .bg-emerald-500 {
+      padding: 0.25rem 0.6rem !important;
+      font-size: 0.7rem !important;
+    }
+    
+    .bg-slate-50.rounded-2xl.p-6 .text-xs {
+      font-size: 0.65rem !important;
+    }
+    
+    .bg-slate-50.rounded-2xl.p-6 .text-sm {
+      font-size: 0.75rem !important;
+      line-height: 1.5 !important;
+    }
+    
+    /* 底部控制栏 */
+    .bg-white.rounded-3xl .px-8.py-5.bg-white.border-t {
+      padding: 0.65rem 1rem !important;
+    }
+    
+    .bg-white.rounded-3xl .px-8.py-5.bg-white.border-t button {
+      padding: 0.5rem 0.85rem !important;
+      font-size: 0.75rem !important;
+    }
+    
+    .bg-white.rounded-3xl .px-8.py-5.bg-white.border-t button svg {
+      width: 0.875rem !important;
+      height: 0.875rem !important;
+    }
+    
+    /* 主容器间距调整 */
+    main.container {
+      padding-left: 0.75rem !important;
+      padding-right: 0.75rem !important;
+      padding-top: 1rem !important;
+      padding-bottom: 1rem !important;
+    }
+    
+    .grid.grid-cols-1.lg\:grid-cols-12 {
+      gap: 0.75rem !important;
+    }
+    
+    .lg\:col-span-6 .flex.flex-col.gap-6 {
+      gap: 0.75rem !important;
+    }
+  }
+  
+  /* 移动端专用：模式切换标签页 */
+  @media (max-width: 768px) {
+    .mobile-mode-tabs {
+      display: flex !important;
+      overflow-x: auto;
+      overflow-y: hidden;
+      gap: 0.35rem;
+      padding: 0.4rem;
+      background: white;
+      border-radius: 0.75rem;
+      margin-bottom: 0.65rem;
+      border: 1px solid #e2e8f0;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+      touch-action: pan-x;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    
+    .mobile-mode-tabs::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .mobile-mode-tab {
+      flex-shrink: 0;
+      padding: 0.42rem 0.7rem;
+      border-radius: 0.5rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+      touch-action: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    
+    .mobile-mode-tab.active {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: white;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    }
+    
+    .mobile-mode-tab:not(.active) {
+      background: #f8fafc;
+      color: #64748b;
+      border-color: #e2e8f0;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .practice-summary-bar {
+      padding: 0.4rem 0.45rem !important;
+    }
+
+    .practice-mode-panel {
+      padding: 0.55rem 0.65rem !important;
+      gap: 0.45rem !important;
+    }
+
+    .practice-mode-panel > div:first-child h2 {
+      font-size: 0.88rem !important;
+      margin-bottom: 0.12rem !important;
+    }
+
+    .practice-mode-panel > div:first-child p {
+      font-size: 0.62rem !important;
+      line-height: 1.22 !important;
+      max-width: none;
+    }
+
+    .practice-mode-actions {
+      gap: 0.4rem !important;
+      width: auto;
+      align-items: flex-start !important;
+    }
+
+    .practice-mode-toolbar {
+      gap: 0.35rem !important;
+    }
+
+    .practice-mode-actions > div:first-child {
+      padding: 0.2rem !important;
+    }
+
+    .practice-mode-actions > div:first-child button {
+      padding: 0.38rem 0.58rem !important;
+      font-size: 0.62rem !important;
+      border-radius: 0.65rem !important;
+    }
+
+    .practice-record-btn {
+      padding: 0.38rem 0.62rem !important;
+      font-size: 0.62rem !important;
+      border-radius: 0.65rem !important;
+    }
+
+    .practice-mode-actions > p {
+      font-size: 0.58rem !important;
+    }
+
+    .mobile-mode-tabs {
+      gap: 0.3rem;
+      padding: 0.35rem;
+    }
+
+    .mobile-mode-tab {
+      padding: 0.38rem 0.62rem;
+      font-size: 0.66rem;
+    }
+  }
+  
+  /* 移动端专用：题目列表浮动按钮 */
+  @media (max-width: 768px) {
+    .mobile-question-list-btn {
+      position: fixed;
+      bottom: 5rem;
+      right: 1rem;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+      z-index: 50;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .mobile-question-list-btn:active {
+      transform: scale(0.95);
+    }
+    
+    .mobile-question-list-btn svg {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+    
+    /* 悬浮按钮新手引导提示 */
+    .float-btn-tip {
+      position: absolute;
+      bottom: 100%;
+      right: 0;
+      margin-bottom: 0.75rem;
+      white-space: nowrap;
+    }
+    
+    .float-btn-tip .tip-content {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      color: white;
+      padding: 0.625rem 0.875rem;
+      border-radius: 0.75rem;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      animation: tipPulse 2s ease-in-out infinite;
+    }
+    
+    .float-btn-tip .tip-close {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.25rem;
+      height: 1.25rem;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.25);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-size: 0.75rem;
+      font-weight: bold;
+      line-height: 1;
+      padding: 0;
+      margin-left: 0.25rem;
+    }
+    
+    .float-btn-tip .tip-close:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    
+    .float-btn-tip .tip-arrow {
+      position: absolute;
+      bottom: -6px;
+      right: 1rem;
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 6px solid #334155;
+    }
+    
+    @keyframes tipPulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.02);
+      }
+    }
+    
+    /* 提示淡入淡出动画 */
+    .tip-fade-enter-active {
+      animation: tipFadeIn 0.3s ease-out;
+    }
+    
+    .tip-fade-leave-active {
+      animation: tipFadeOut 0.2s ease-in;
+    }
+    
+    @keyframes tipFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes tipFadeOut {
+      from {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+    }
+  }
+  
+  /* 庆祝弹窗动画 */
+  .animate-bounce-in {
+    animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+  
+  @keyframes bounceIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.3);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    70% {
+      transform: scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  /* 礼花飘落动画 */
+  .animate-confetti {
+    animation: confettiFall 3s ease-in-out infinite;
+  }
+  
+  @keyframes confettiFall {
+    0% {
+      transform: translateY(0) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(400px) rotate(720deg);
+      opacity: 0;
+    }
+  }
+  
+  /* 移动端专项题库弹窗样式 */
+  .mobile-category-dialog {
+    border-radius: 1rem !important;
+  }
+  .mobile-category-dialog .el-dialog__header {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #f1f5f9;
+    margin-right: 0;
+  }
+  .mobile-category-dialog .el-dialog__title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1e293b;
+  }
+  .mobile-category-dialog .el-dialog__body {
+    padding: 1rem 1.25rem 1.5rem;
+  }
+  .mobile-category-dialog .el-dialog__headerbtn {
+    top: 1rem;
+    right: 1rem;
+  }
+  
+  /* 选项选中旋转动画 */
+  .rotate-animation {
+    animation: rotateIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+  
+  @keyframes rotateIn {
+    0% {
+      transform: rotate(0deg) scale(1);
+    }
+    50% {
+      transform: rotate(180deg) scale(1.1);
+    }
+    100% {
+      transform: rotate(360deg) scale(1);
+    }
+  }

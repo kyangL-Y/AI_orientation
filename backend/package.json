@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "scripts": {
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "element-ui": "^2.15.14"
+  },
+  "devDependencies": {
+    "chalk": "^5.6.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.4.3"
+  },
+  "lint-staged": {
+    "RuoYi-Vue3/src/**/*.{js,vue}": [
+      "node RuoYi-Vue3/node_modules/eslint/bin/eslint.js --no-error-on-unmatched-pattern"
+    ]
+  }
+}

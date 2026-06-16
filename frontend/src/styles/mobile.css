@@ -1,0 +1,125 @@
+/* 移动端全局样式优化 */
+
+/* 移动端触摸优化 */
+@media (max-width: 768px) {
+  /* 确保所有可交互元素都有足够的触摸区域 */
+  a, button, [role="button"], input[type="button"], input[type="submit"], .el-button {
+    min-height: 44px;
+    min-width: 44px;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    touch-action: manipulation;
+  }
+  
+  /* 输入框优化 */
+  input, textarea, select {
+    font-size: 16px !important; /* 防止iOS自动缩放 */
+    -webkit-appearance: none;
+    border-radius: 8px;
+  }
+  
+  /* 卡片间距优化 */
+  .bg-white, .card, [class*="rounded-xl"], [class*="rounded-lg"] {
+    margin-bottom: 16px;
+  }
+  
+  /* 表格在移动端改为卡片显示 */
+  table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* 滚动优化 */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* 文本选择优化 */
+  p, span, div, h1, h2, h3, h4, h5, h6 {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+  
+  /* 按钮文本选择禁用 */
+  button, a, [role="button"] {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  
+  /* 图片优化 */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* 模态框优化 */
+  .el-dialog {
+    width: 95% !important;
+    margin: 5vh auto !important;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  /* 表单优化 */
+  .el-form-item {
+    margin-bottom: 16px;
+  }
+  
+  /* 列表优化 */
+  .el-list-item {
+    padding: 12px 16px;
+  }
+}
+
+/* 超小屏幕优化 */
+@media (max-width: 480px) {
+  /* 更小的内边距 */
+  .container, .px-4, [class*="px-"] {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  
+  .py-6, .py-8, [class*="py-"] {
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+  
+  /* 更小的字体 */
+  h1 { font-size: 1.5rem !important; }
+  h2 { font-size: 1.25rem !important; }
+  h3 { font-size: 1.125rem !important; }
+  
+  /* 统计卡片改为单列 */
+  .grid-cols-2, .grid-cols-3, .grid-cols-4 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* 横屏优化 */
+@media (max-width: 768px) and (orientation: landscape) {
+  /* 横屏时减少垂直内边距 */
+  .py-6, .py-8 {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+  
+  /* Header 高度优化 */
+  .header {
+    padding: 8px 16px;
+  }
+}
+
+/* iOS Safari 安全区域适配 */
+@supports (padding: max(0px)) {
+  @media (max-width: 768px) {
+    body {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    
+    .header {
+      padding-top: max(16px, env(safe-area-inset-top));
+    }
+  }
+}
+

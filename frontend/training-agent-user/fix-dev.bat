@@ -1,0 +1,9 @@
+@echo off
+echo Starting build in watch mode...
+start "Build Watch" cmd /c "pnpm vite build --watch"
+
+echo Waiting for build to initialize...
+timeout /t 10
+
+echo Starting static server on port 8084...
+npx serve -s dist -p 8084

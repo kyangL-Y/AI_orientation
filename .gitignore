@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build outputs
+target/
+dist/
+build/
+out/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Environment & Sensitive
+.env
+.env.local
+*.key
+backend/ruoyi-admin/src/main/resources/application*.yml
+backend/ruoyi-generator/src/main/resources/application.yml

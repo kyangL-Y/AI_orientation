@@ -1,0 +1,7 @@
+npx lint-staged
+
+# If Java files were staged, compile-check them
+JAVA_STAGED=$(git diff --cached --name-only --diff-filter=ACM -- '*.java')
+if [ -n "$JAVA_STAGED" ]; then
+  mvn test-compile -q -pl ruoyi-admin -am
+fi

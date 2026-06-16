@@ -1,0 +1,13 @@
+<!doctype html>
+<html>
+<head><meta charset="UTF-8"><title>autologin</title></head>
+<body>
+<script>
+  document.cookie = 'Admin-Token=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiLliJjmtIsiLCJsb2dpbl91c2VyX2tleSI6ImIzNWIwY2UzLWFjMWUtNGFjYS1iZmE3LTYxNTM4MTFjZjA2NiJ9.5KgBsTDDk6fy9P1cUeqD05oNWxxGnjxj8jsgeev2JpIPfChxej8pLbWnG4567YnPwnbvYS7RfBjTcV7s_g4bNg; path=/';
+  document.cookie = 'Tenant-Id=T001; path=/';
+  localStorage.setItem('layout-setting', JSON.stringify({ topNav: false, tagsView: true, tagsIcon: false, fixedHeader: false, sidebarLogo: true, dynamicTitle: false, footerVisible: false, sideTheme: ' + '"theme-dark"' + ', theme: ' + '"#4361ee"' + ' }));
+  setTimeout(function () { location.href = '/#/index'; }, 100);
+</script>
+正在自动登录...
+</body>
+</html>
