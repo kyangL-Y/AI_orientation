@@ -28,3 +28,8 @@ logs/
 *.key
 backend/ruoyi-admin/src/main/resources/application*.yml
 backend/ruoyi-generator/src/main/resources/application.yml
+
+# Temporary files
+*-cwd
+tmpclaude-*
+*.tmp
